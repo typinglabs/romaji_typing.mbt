@@ -59,12 +59,16 @@ fn build_graph_from_kana_with_dist(
     visited[node_id] = true
 
     // 遷移
-    for key = 'a'; key <= 'z'; key = Int::unsafe_to_char(key.to_int() + 1) {
+    let keys : ReadOnlyArray[Char] = [
+      '-', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n',
+      'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z',
+    ]
+    for key in keys {
       let result = process(node.buffer, key)
 
       // result.outputが、kanaに一致していることが必要条件
       guard node.kana_index <= len else {
-        abort("kana_index out of range: \{node.kana_index} > \{len}")
+        fail("kana_index out of range: \{node.kana_index} > \{len}")
       }
       let ok = view[node.kana_index:].has_prefix(result.output)
       if !ok {
@@ -110,7 +114,7 @@ fn build_graph_from_kana_with_dist(
       Some(edges) => edges
     }
     let from_dist = match dist.get(from) {
-      None => abort("distance missing for node: \{from}")
+      None => fail("distance missing for node: \{from}")
       Some(value) => value
     }
     for edge in edges {
@@ -135,16 +139,16 @@ fn shortest_path(
   dist : Map[NodeId, Int],
   start : NodeId,
   goal : NodeId,
-) -> Array[Edge] {
+) -> Array[Edge] raise Error {
   let path : Array[Edge] = []
   let mut current = start
   while current != goal {
     let current_dist = match dist.get(current) {
-      None => abort("distance missing for node: \{current}")
+      None => fail("distance missing for node: \{current}")
       Some(value) => value
     }
     let edges = match graph.get(current) {
-      None => abort("graph missing node: \{current}")
+      None => fail("graph missing node: \{current}")
       Some(edges) => edges
     }
     let mut moved = false
@@ -159,7 +163,7 @@ fn shortest_path(
         _ => ()
       }
     }
-    guard moved else { abort("no shortest edge found from: \{current}") }
+    guard moved else { fail("no shortest edge found from: \{current}") }
   }
   path
 }
@@ -174,7 +178,7 @@ fn edges_to_string(edges : Array[Edge]) -> String {
 }
 
 ///|
-test "build_kana_graph" {
+test "build_kana_graph きゅう" {
   let (graph, dist) = build_graph_from_kana_with_dist("きゅう")
   inspect(
     graph,
@@ -197,4 +201,23 @@ test "build_kana_graph" {
     ),
   )
   inspect(roman, content="kyuu")
+}
+
+///|
+test "build_kana_graph な" {
+  let (graph, _) = build_graph_from_kana_with_dist("な")
+  inspect(
+    graph,
+    content=(
+      #|{"0|n": [{to: "1|", pressed_key: 'a'}], "0|": [{to: "0|n", pressed_key: 'n'}]}
+    ),
+  )
+}
+
+///|
+test "build_kana_graph あー" {
+  let (graph, _) = build_graph_from_kana_with_dist("あー")
+  inspect(graph, content=(
+    #|{"1|": [{to: "2|", pressed_key: '-'}], "0|": [{to: "1|", pressed_key: 'a'}]}
+  ))
 }

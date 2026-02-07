@@ -12,13 +12,53 @@ struct ProcessOutput {
 } derive(Eq, Show)
 
 ///|
+fn build_rules_by_input() -> Map[String, Array[Rule]] {
+  let rules_by_input : Map[String, Array[Rule]] = Map::new()
+  for rule in table {
+    match rules_by_input.get(rule.input) {
+      None => rules_by_input.set(rule.input, [rule])
+      Some(rules) => rules.push(rule)
+    }
+  }
+  rules_by_input
+}
+
+///|
+fn build_rules_by_prefix() -> Map[String, Array[Rule]] {
+  let rules_by_prefix : Map[String, Array[Rule]] = Map::new()
+  for rule in table {
+    let mut prefix = ""
+    for ch in rule.input.iter() {
+      prefix += ch.to_string()
+      match rules_by_prefix.get(prefix) {
+        None => rules_by_prefix.set(prefix, [rule])
+        Some(rules) => rules.push(rule)
+      }
+    }
+  }
+  rules_by_prefix
+}
+
+///|
+let rules_by_input : Map[String, Array[Rule]] = build_rules_by_input()
+
+///|
+let rules_by_prefix : Map[String, Array[Rule]] = build_rules_by_prefix()
+
+///|
 fn findRules(input : String) -> Array[Rule] {
-  table.filter(rule => rule.input == input)
+  match rules_by_input.get(input) {
+    None => []
+    Some(rules) => rules
+  }
 }
 
 ///|
 fn findRulesByPrefix(input : String) -> Array[Rule] {
-  table.filter(rule => rule.input.has_prefix(input))
+  match rules_by_prefix.get(input) {
+    None => []
+    Some(rules) => rules
+  }
 }
 
 ///|
@@ -36,6 +76,11 @@ fn process(buffer : String, key : Char) -> ProcessOutput {
   let rules = findRules(newBuffer)
   if rules.length() > 0 {
     // バッファーに合致するルールがある場合
+    let prefixRules = findRulesByPrefix(newBuffer)
+    if prefixRules.length() > rules.length() {
+      // 完全一致だけでなく前方一致もある場合は保留する（例: "n" -> "na" 等）
+      return { output: "", buffer: newBuffer }
+    }
     if rules.length() == 1 {
       // 合致するルールが1つだけ→それを使って変換する
       let rule = rules[0]
@@ -148,6 +193,7 @@ test "process / tta, ltuta, xtuta -> った" {
 
 ///|
 let table : Array[Rule] = [
+  { input: "-", output: "ー", nextInput: None },
   { input: "va", output: "ゔぁ", nextInput: None },
   { input: "va", output: "ゔぁ", nextInput: None },
   { input: "vi", output: "ゔぃ", nextInput: None },
