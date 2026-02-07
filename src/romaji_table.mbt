@@ -12,13 +12,53 @@ struct ProcessOutput {
 } derive(Eq, Show)
 
 ///|
+fn build_rules_by_input() -> Map[String, Array[Rule]] {
+  let rules_by_input : Map[String, Array[Rule]] = Map::new()
+  for rule in table {
+    match rules_by_input.get(rule.input) {
+      None => rules_by_input.set(rule.input, [rule])
+      Some(rules) => rules.push(rule)
+    }
+  }
+  rules_by_input
+}
+
+///|
+fn build_rules_by_prefix() -> Map[String, Array[Rule]] {
+  let rules_by_prefix : Map[String, Array[Rule]] = Map::new()
+  for rule in table {
+    let mut prefix = ""
+    for ch in rule.input.iter() {
+      prefix += ch.to_string()
+      match rules_by_prefix.get(prefix) {
+        None => rules_by_prefix.set(prefix, [rule])
+        Some(rules) => rules.push(rule)
+      }
+    }
+  }
+  rules_by_prefix
+}
+
+///|
+let rules_by_input : Map[String, Array[Rule]] = build_rules_by_input()
+
+///|
+let rules_by_prefix : Map[String, Array[Rule]] = build_rules_by_prefix()
+
+///|
 fn findRules(input : String) -> Array[Rule] {
-  table.filter(rule => rule.input == input)
+  match rules_by_input.get(input) {
+    None => []
+    Some(rules) => rules
+  }
 }
 
 ///|
 fn findRulesByPrefix(input : String) -> Array[Rule] {
-  table.filter(rule => rule.input.has_prefix(input))
+  match rules_by_prefix.get(input) {
+    None => []
+    Some(rules) => rules
+  }
 }
 
 ///|
