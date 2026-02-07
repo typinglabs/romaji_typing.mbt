@@ -36,6 +36,11 @@ fn process(buffer : String, key : Char) -> ProcessOutput {
   let rules = findRules(newBuffer)
   if rules.length() > 0 {
     // バッファーに合致するルールがある場合
+    let prefixRules = findRulesByPrefix(newBuffer)
+    if prefixRules.length() > rules.length() {
+      // 完全一致だけでなく前方一致もある場合は保留する（例: "n" -> "na" 等）
+      return { output: "", buffer: newBuffer }
+    }
     if rules.length() == 1 {
       // 合致するルールが1つだけ→それを使って変換する
       let rule = rules[0]
@@ -148,6 +153,7 @@ test "process / tta, ltuta, xtuta -> った" {
 
 ///|
 let table : Array[Rule] = [
+  { input: "-", output: "ー", nextInput: None },
   { input: "va", output: "ゔぁ", nextInput: None },
   { input: "va", output: "ゔぁ", nextInput: None },
   { input: "vi", output: "ゔぃ", nextInput: None },

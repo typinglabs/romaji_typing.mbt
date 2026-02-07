@@ -1,0 +1,8 @@
+{
+  "import": [
+    {
+      "path": "typinglabs/romaji_typing/src",
+      "alias": "typing"
+    }
+  ]
+}
