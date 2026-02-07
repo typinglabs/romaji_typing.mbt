@@ -30,4 +30,8 @@ shortest_pathでクラッシュしているので、修正していきます。
 
 かな→グラフの構築について。パニックはしないようにしたい。具体的にどこでエラー出ているのでしょうか。
 
-グラフが構築できない場合があるので、そこで
+## 参考
+
+- [Error handling — MoonBit v0.7.1 documentation](https://docs.moonbitlang.com/en/latest/language/error-handling.html)
+- [Writing Tests — MoonBit v0.7.1 documentation](https://docs.moonbitlang.com/en/latest/language/tests.html)
+- [MoonBit's Package Manager Tutorial — MoonBit v0.7.1 documentation](https://docs.moonbitlang.com/en/latest/toolchain/moon/package-manage-tour.html)
