@@ -19,6 +19,8 @@ struct TypingViewModel {
 ///|
 enum TypingMsg {
   Noop
+  Stop
+  Tick
 }
 
 ///|
