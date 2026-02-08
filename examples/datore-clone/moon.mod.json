@@ -1,0 +1,7 @@
+{
+  "name": "datore-clone",
+  "deps": {
+    "Yoorkin/rabbit-tea": "0.10.11"
+  },
+  "preferred-target": "js"
+}

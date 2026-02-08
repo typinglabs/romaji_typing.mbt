@@ -1,0 +1,1200 @@
+{
+  "version": "2.7",
+  "children": [
+    {
+      "type": "frame",
+      "id": "L3poj",
+      "x": 0,
+      "y": -344,
+      "name": "スタート画面",
+      "width": 950,
+      "fill": "#CCCCCC",
+      "layout": "vertical",
+      "gap": 20,
+      "padding": 20,
+      "children": [
+        {
+          "type": "frame",
+          "id": "hkFNY",
+          "name": "topBar",
+          "width": "fill_container",
+          "height": 80,
+          "gap": 20,
+          "padding": [
+            0,
+            20
+          ],
+          "justifyContent": "space_around",
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "frame",
+              "id": "fufHB",
+              "name": "keyColumn",
+              "width": 200,
+              "gap": 12,
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "FhOhB",
+                  "name": "keyNumBox",
+                  "width": 150,
+                  "height": 60,
+                  "fill": "#FFFFFF",
+                  "cornerRadius": 8,
+                  "justifyContent": "center",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "8ZqmX",
+                      "name": "keyNum",
+                      "fill": "#6B7280",
+                      "content": "0",
+                      "fontFamily": "Inter",
+                      "fontSize": 36,
+                      "fontWeight": "bold"
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "id": "xY1KL",
+                  "name": "keyLabel2",
+                  "fill": "#000000",
+                  "content": "打鍵",
+                  "fontFamily": "Inter",
+                  "fontSize": 22,
+                  "fontWeight": "normal"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "8wY9u",
+              "name": "missColumn",
+              "width": 150,
+              "gap": 12,
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "UqKRI",
+                  "name": "missNumBox",
+                  "width": 120,
+                  "height": 60,
+                  "fill": "#FFFFFF",
+                  "cornerRadius": 8,
+                  "justifyContent": "center",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "dmpSe",
+                      "name": "missNum",
+                      "fill": "#6B7280",
+                      "content": "0",
+                      "fontFamily": "Inter",
+                      "fontSize": 36,
+                      "fontWeight": "bold"
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "id": "JmdrF",
+                  "name": "missLabel2",
+                  "fill": "#000000",
+                  "content": "ミス",
+                  "fontFamily": "Inter",
+                  "fontSize": 22,
+                  "fontWeight": "normal"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "9VvYf",
+              "name": "timeColumn",
+              "width": 200,
+              "gap": 12,
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "rW7ky",
+                  "name": "timeNumBox",
+                  "width": 150,
+                  "height": 60,
+                  "fill": "#FFFFFF",
+                  "cornerRadius": 8,
+                  "justifyContent": "center",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "lCCWB",
+                      "name": "timeNum",
+                      "fill": "#6B7280",
+                      "content": "0",
+                      "fontFamily": "Inter",
+                      "fontSize": 36,
+                      "fontWeight": "bold"
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "id": "afn80",
+                  "name": "timeLabel2",
+                  "fill": "#000000",
+                  "content": "残り時間",
+                  "fontFamily": "Inter",
+                  "fontSize": 22,
+                  "fontWeight": "normal"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "d2Kjx",
+          "name": "messageBox",
+          "width": "fill_container",
+          "height": 70,
+          "fill": "#FFFFFF",
+          "layout": "vertical",
+          "gap": 10,
+          "padding": 30,
+          "justifyContent": "center",
+          "children": [
+            {
+              "type": "frame",
+              "id": "zHRmE",
+              "name": "messageRow",
+              "width": "fill_container",
+              "gap": 10,
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "bnKn2",
+                  "name": "timeoutText",
+                  "fill": "#000000",
+                  "fontFamily": "Inter",
+                  "fontSize": 20,
+                  "fontWeight": "bold"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "PARdD",
+          "name": "statsBox",
+          "width": "fill_container",
+          "height": 70,
+          "fill": "#FFFFFF",
+          "gap": 30,
+          "padding": [
+            20,
+            30
+          ],
+          "children": [
+            {
+              "type": "text",
+              "id": "QQwTh",
+              "name": "statsText",
+              "fill": "#000000",
+              "fontFamily": "Inter",
+              "fontSize": 20,
+              "fontWeight": "bold"
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "Plh5L",
+          "name": "bottomBox",
+          "width": "fill_container",
+          "height": 60,
+          "fill": "#DDDDDD",
+          "gap": 30,
+          "padding": [
+            0,
+            20
+          ],
+          "justifyContent": "space_between",
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "frame",
+              "id": "m7tpl",
+              "name": "statsGroup2",
+              "gap": 20,
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "M1sUD",
+                  "name": "maxText3",
+                  "fill": "#000000",
+                  "content": "Max： 97",
+                  "fontFamily": "Inter",
+                  "fontSize": 18,
+                  "fontWeight": "normal"
+                },
+                {
+                  "type": "text",
+                  "id": "KFYFI",
+                  "name": "minText3",
+                  "fill": "#000000",
+                  "content": "Min： 97",
+                  "fontFamily": "Inter",
+                  "fontSize": 18,
+                  "fontWeight": "normal"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "JvclR",
+              "name": "startBtn",
+              "width": 200,
+              "height": 40,
+              "fill": "#4B5563",
+              "cornerRadius": 6,
+              "justifyContent": "center",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "cY2Hf",
+                  "name": "startBtnText",
+                  "fill": "#FFFFFF",
+                  "content": "スタート (Enter)",
+                  "fontFamily": "Inter",
+                  "fontSize": 16,
+                  "fontWeight": "bold"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "V1VIi",
+      "x": 1081,
+      "y": -344,
+      "name": "タイピング画面",
+      "width": 950,
+      "fill": "#CCCCCC",
+      "layout": "vertical",
+      "gap": 20,
+      "padding": 20,
+      "children": [
+        {
+          "type": "frame",
+          "id": "caEZR",
+          "name": "topBar",
+          "width": "fill_container",
+          "height": 80,
+          "gap": 20,
+          "padding": [
+            0,
+            20
+          ],
+          "justifyContent": "space_around",
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "frame",
+              "id": "wqTsV",
+              "name": "keyColumn",
+              "width": 200,
+              "gap": 12,
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "k5bCj",
+                  "name": "keyNumBox",
+                  "width": 150,
+                  "height": 60,
+                  "fill": "#FFFFFF",
+                  "cornerRadius": 8,
+                  "justifyContent": "center",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "9eOFI",
+                      "name": "keyNum",
+                      "fill": "#6B7280",
+                      "content": "45",
+                      "fontFamily": "Inter",
+                      "fontSize": 36,
+                      "fontWeight": "bold"
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "id": "N2cmn",
+                  "name": "keyLabel2",
+                  "fill": "#000000",
+                  "content": "打鍵",
+                  "fontFamily": "Inter",
+                  "fontSize": 22,
+                  "fontWeight": "normal"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "TdZm6",
+              "name": "missColumn",
+              "width": 150,
+              "gap": 12,
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "yNqma",
+                  "name": "missNumBox",
+                  "width": 120,
+                  "height": 60,
+                  "fill": "#FFFFFF",
+                  "cornerRadius": 8,
+                  "justifyContent": "center",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "V70GJ",
+                      "name": "missNum",
+                      "fill": "#6B7280",
+                      "content": "3",
+                      "fontFamily": "Inter",
+                      "fontSize": 36,
+                      "fontWeight": "bold"
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "id": "vcNzL",
+                  "name": "missLabel2",
+                  "fill": "#000000",
+                  "content": "ミス",
+                  "fontFamily": "Inter",
+                  "fontSize": 22,
+                  "fontWeight": "normal"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "FiMXT",
+              "name": "timeColumn",
+              "width": 200,
+              "gap": 12,
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "CwrXh",
+                  "name": "timeNumBox",
+                  "width": 150,
+                  "height": 60,
+                  "fill": "#FFFFFF",
+                  "cornerRadius": 8,
+                  "justifyContent": "center",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "aW4wz",
+                      "name": "typingNum3",
+                      "fill": "#6B7280",
+                      "content": "55",
+                      "fontFamily": "Inter",
+                      "fontSize": 36,
+                      "fontWeight": "bold"
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "id": "vFkJ5",
+                  "name": "timeLabel2",
+                  "fill": "#000000",
+                  "content": "残り時間",
+                  "fontFamily": "Inter",
+                  "fontSize": 22,
+                  "fontWeight": "normal"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "9vTT8",
+          "name": "messageBox",
+          "width": "fill_container",
+          "height": 70,
+          "fill": "#FFFFFF",
+          "layout": "vertical",
+          "gap": 10,
+          "padding": 30,
+          "justifyContent": "center",
+          "children": [
+            {
+              "type": "frame",
+              "id": "HF4YU",
+              "name": "messageRow",
+              "width": "fill_container",
+              "gap": 10,
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "lGrrG",
+                  "name": "kanjiContainer",
+                  "width": "fill_container",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "BH0Lf",
+                      "name": "typedKanji",
+                      "fill": "#999999",
+                      "content": "吾輩は猫",
+                      "fontFamily": "Inter",
+                      "fontSize": 28,
+                      "fontWeight": "bold"
+                    },
+                    {
+                      "type": "text",
+                      "id": "PLR2W",
+                      "name": "remainingKanji",
+                      "fill": "#000000",
+                      "content": "である。名前はまだ無い。",
+                      "fontFamily": "Inter",
+                      "fontSize": 28,
+                      "fontWeight": "bold"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "kO6hM",
+          "name": "statsBox",
+          "width": "fill_container",
+          "height": 70,
+          "fill": "#FFFFFF",
+          "gap": 30,
+          "padding": [
+            20,
+            30
+          ],
+          "children": [
+            {
+              "type": "frame",
+              "id": "QZS4B",
+              "name": "romajiContainer",
+              "width": "fill_container",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "i5ATp",
+                  "name": "typed",
+                  "fill": "#999999",
+                  "content": "wagahaihaneko",
+                  "fontFamily": "Inter",
+                  "fontSize": 24,
+                  "fontWeight": "normal"
+                },
+                {
+                  "type": "text",
+                  "id": "eZWtK",
+                  "name": "current",
+                  "fill": "#FF0000",
+                  "content": "d",
+                  "fontFamily": "Inter",
+                  "fontSize": 28,
+                  "fontWeight": "bold"
+                },
+                {
+                  "type": "text",
+                  "id": "SGlks",
+                  "name": "remaining",
+                  "fill": "#333333",
+                  "content": "earu.namaehamadanai.",
+                  "fontFamily": "Inter",
+                  "fontSize": 24,
+                  "fontWeight": "normal"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "0fy4R",
+          "name": "bottomBox",
+          "width": "fill_container",
+          "height": 60,
+          "fill": "#DDDDDD",
+          "gap": 30,
+          "padding": [
+            0,
+            20
+          ],
+          "justifyContent": "space_between",
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "frame",
+              "id": "mk0cr",
+              "name": "startBtn",
+              "enabled": false,
+              "width": 200,
+              "height": 40,
+              "fill": "#4B5563",
+              "cornerRadius": 6,
+              "justifyContent": "center",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "3fHOf",
+                  "name": "startBtnText",
+                  "fill": "#FFFFFF",
+                  "content": "スタート (Enter)",
+                  "fontFamily": "Inter",
+                  "fontSize": 16,
+                  "fontWeight": "bold"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "0TZKJ",
+              "name": "statsGroup4",
+              "gap": 20,
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "fb90J",
+                  "name": "maxText5",
+                  "fill": "#000000",
+                  "content": "Max： 97",
+                  "fontFamily": "Inter",
+                  "fontSize": 18,
+                  "fontWeight": "normal"
+                },
+                {
+                  "type": "text",
+                  "id": "JmKSc",
+                  "name": "minText5",
+                  "fill": "#000000",
+                  "content": "Min： 97",
+                  "fontFamily": "Inter",
+                  "fontSize": 18,
+                  "fontWeight": "normal"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "E0MPL",
+      "x": 1081,
+      "y": 139,
+      "name": "終了画面",
+      "width": 950,
+      "fill": "#CCCCCC",
+      "layout": "vertical",
+      "gap": 20,
+      "padding": 20,
+      "children": [
+        {
+          "type": "frame",
+          "id": "Tarjr",
+          "name": "topBar",
+          "width": "fill_container",
+          "height": 80,
+          "gap": 20,
+          "padding": [
+            0,
+            20
+          ],
+          "justifyContent": "space_around",
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "frame",
+              "id": "sp5c7",
+              "name": "keyColumn",
+              "width": 200,
+              "gap": 12,
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "NYs63",
+                  "name": "keyNumBox",
+                  "width": 150,
+                  "height": 60,
+                  "fill": "#FFFFFF",
+                  "cornerRadius": 8,
+                  "justifyContent": "center",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "27DW8",
+                      "name": "keyNum",
+                      "fill": "#6B7280",
+                      "content": "97",
+                      "fontFamily": "Inter",
+                      "fontSize": 36,
+                      "fontWeight": "bold"
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "id": "Xwjrw",
+                  "name": "keyLabel2",
+                  "fill": "#000000",
+                  "content": "打鍵",
+                  "fontFamily": "Inter",
+                  "fontSize": 22,
+                  "fontWeight": "normal"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "FIIex",
+              "name": "missColumn",
+              "width": 150,
+              "gap": 12,
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "HlfPB",
+                  "name": "missNumBox",
+                  "width": 120,
+                  "height": 60,
+                  "fill": "#FFFFFF",
+                  "cornerRadius": 8,
+                  "justifyContent": "center",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "gNUWy",
+                      "name": "missNum",
+                      "fill": "#6B7280",
+                      "content": "6",
+                      "fontFamily": "Inter",
+                      "fontSize": 36,
+                      "fontWeight": "bold"
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "id": "VMCYV",
+                  "name": "missLabel2",
+                  "fill": "#000000",
+                  "content": "ミス",
+                  "fontFamily": "Inter",
+                  "fontSize": 22,
+                  "fontWeight": "normal"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "l0NKg",
+              "name": "timeColumn",
+              "width": 200,
+              "gap": 12,
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "5N5in",
+                  "name": "timeNumBox",
+                  "width": 150,
+                  "height": 60,
+                  "fill": "#FFFFFF",
+                  "cornerRadius": 8,
+                  "justifyContent": "center",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "uYqE1",
+                      "name": "timeNum",
+                      "fill": "#6B7280",
+                      "content": "0",
+                      "fontFamily": "Inter",
+                      "fontSize": 36,
+                      "fontWeight": "bold"
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "id": "OyuDV",
+                  "name": "timeLabel2",
+                  "fill": "#000000",
+                  "content": "残り時間",
+                  "fontFamily": "Inter",
+                  "fontSize": 22,
+                  "fontWeight": "normal"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "2n4bS",
+          "name": "messageBox",
+          "width": "fill_container",
+          "height": 70,
+          "fill": "#FFFFFF",
+          "layout": "vertical",
+          "gap": 10,
+          "padding": 30,
+          "justifyContent": "center",
+          "children": [
+            {
+              "type": "frame",
+              "id": "smcu9",
+              "name": "messageRow",
+              "width": "fill_container",
+              "gap": 10,
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "6geQX",
+                  "name": "timeoutText",
+                  "fill": "#000000",
+                  "content": "Time Out!!   お疲れさまでした   ",
+                  "fontFamily": "Inter",
+                  "fontSize": 20,
+                  "fontWeight": "bold"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "4gnd0",
+          "name": "statsBox",
+          "width": "fill_container",
+          "height": 70,
+          "fill": "#FFFFFF",
+          "gap": 30,
+          "padding": [
+            20,
+            30
+          ],
+          "children": [
+            {
+              "type": "text",
+              "id": "7CZpz",
+              "name": "statsText",
+              "fill": "#000000",
+              "content": "苦手キー：s(3)    u(2)    a(1)",
+              "fontFamily": "Inter",
+              "fontSize": 20,
+              "fontWeight": "bold"
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "HMoE8",
+          "name": "bottomBox",
+          "width": "fill_container",
+          "height": 60,
+          "fill": "#DDDDDD",
+          "gap": 30,
+          "padding": [
+            0,
+            20
+          ],
+          "justifyContent": "space_between",
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "frame",
+              "id": "Lrovf",
+              "name": "statsGroup",
+              "gap": 20,
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "RpgDa",
+                  "name": "maxText2",
+                  "fill": "#000000",
+                  "content": "Max： 97",
+                  "fontFamily": "Inter",
+                  "fontSize": 18,
+                  "fontWeight": "normal"
+                },
+                {
+                  "type": "text",
+                  "id": "Msmqx",
+                  "name": "minText2",
+                  "fill": "#000000",
+                  "content": "Min： 97",
+                  "fontFamily": "Inter",
+                  "fontSize": 18,
+                  "fontWeight": "normal"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "SJA9G",
+              "name": "restartButton",
+              "width": 200,
+              "height": 40,
+              "fill": "#4B5563",
+              "cornerRadius": 6,
+              "gap": 8,
+              "justifyContent": "center",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "pBn6b",
+                  "name": "restartText",
+                  "fill": "#FFFFFF",
+                  "content": "リスタート (Esc)",
+                  "fontFamily": "Inter",
+                  "fontSize": 16,
+                  "fontWeight": "bold"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "ukkuA",
+      "x": 0,
+      "y": 139,
+      "name": "カウントダウン画面",
+      "width": 950,
+      "fill": "#CCCCCC",
+      "layout": "vertical",
+      "gap": 20,
+      "padding": 20,
+      "children": [
+        {
+          "type": "frame",
+          "id": "46xDp",
+          "name": "topBar",
+          "width": "fill_container",
+          "height": 80,
+          "gap": 20,
+          "padding": [
+            0,
+            20
+          ],
+          "justifyContent": "space_around",
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "frame",
+              "id": "evPbS",
+              "name": "keyColumn",
+              "width": 200,
+              "gap": 12,
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "0OM1q",
+                  "name": "keyNumBox",
+                  "width": 150,
+                  "height": 60,
+                  "fill": "#FFFFFF",
+                  "cornerRadius": 8,
+                  "justifyContent": "center",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "2wtC2",
+                      "name": "num1",
+                      "fill": "#6B7280",
+                      "content": "3",
+                      "fontFamily": "Inter",
+                      "fontSize": 36,
+                      "fontWeight": "bold"
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "id": "orJkT",
+                  "name": "keyLabel2",
+                  "fill": "#000000",
+                  "content": "打鍵",
+                  "fontFamily": "Inter",
+                  "fontSize": 22,
+                  "fontWeight": "normal"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "6Taq5",
+              "name": "missColumn",
+              "width": 150,
+              "gap": 12,
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "4B9us",
+                  "name": "missNumBox",
+                  "width": 120,
+                  "height": 60,
+                  "fill": "#FFFFFF",
+                  "cornerRadius": 8,
+                  "justifyContent": "center",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "IkgnP",
+                      "name": "num2",
+                      "fill": "#6B7280",
+                      "content": "3",
+                      "fontFamily": "Inter",
+                      "fontSize": 36,
+                      "fontWeight": "bold"
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "id": "nvwRs",
+                  "name": "missLabel2",
+                  "fill": "#000000",
+                  "content": "ミス",
+                  "fontFamily": "Inter",
+                  "fontSize": 22,
+                  "fontWeight": "normal"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "fY6tx",
+              "name": "timeColumn",
+              "width": 200,
+              "gap": 12,
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "WJmUu",
+                  "name": "timeNumBox",
+                  "width": 150,
+                  "height": 60,
+                  "fill": "#FFFFFF",
+                  "cornerRadius": 8,
+                  "justifyContent": "center",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "q8DYG",
+                      "name": "timeNum",
+                      "fill": "#6B7280",
+                      "content": "3",
+                      "fontFamily": "Inter",
+                      "fontSize": 36,
+                      "fontWeight": "bold"
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "id": "cNGhu",
+                  "name": "timeLabel2",
+                  "fill": "#000000",
+                  "content": "残り時間",
+                  "fontFamily": "Inter",
+                  "fontSize": 22,
+                  "fontWeight": "normal"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "4JdEO",
+          "name": "messageBox",
+          "width": "fill_container",
+          "height": 70,
+          "fill": "#FFFFFF",
+          "layout": "vertical",
+          "gap": 10,
+          "padding": 30,
+          "justifyContent": "center",
+          "children": [
+            {
+              "type": "frame",
+              "id": "mhFUm",
+              "name": "messageRow",
+              "width": "fill_container",
+              "gap": 10,
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "puMBZ",
+                  "name": "timeoutText",
+                  "fill": "#000000",
+                  "fontFamily": "Inter",
+                  "fontSize": 20,
+                  "fontWeight": "bold"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "GTIEj",
+          "name": "statsBox",
+          "width": "fill_container",
+          "height": 70,
+          "fill": "#FFFFFF",
+          "gap": 30,
+          "padding": [
+            20,
+            30
+          ],
+          "children": [
+            {
+              "type": "text",
+              "id": "GeVnn",
+              "name": "statsText",
+              "fill": "#000000",
+              "fontFamily": "Inter",
+              "fontSize": 20,
+              "fontWeight": "bold"
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "tpCB0",
+          "name": "bottomBox",
+          "width": "fill_container",
+          "height": 60,
+          "fill": "#DDDDDD",
+          "gap": 30,
+          "padding": [
+            0,
+            20
+          ],
+          "justifyContent": "space_between",
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "frame",
+              "id": "Mn8PZ",
+              "name": "startBtn",
+              "enabled": false,
+              "width": 200,
+              "height": 40,
+              "fill": "#4B5563",
+              "cornerRadius": 6,
+              "justifyContent": "center",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "Ex4Lx",
+                  "name": "startBtnText",
+                  "fill": "#FFFFFF",
+                  "content": "スタート (Enter)",
+                  "fontFamily": "Inter",
+                  "fontSize": 16,
+                  "fontWeight": "bold"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "A5iWe",
+              "name": "statsGroup3",
+              "gap": 20,
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "eUfsh",
+                  "name": "maxText4",
+                  "fill": "#000000",
+                  "content": "Max： 97",
+                  "fontFamily": "Inter",
+                  "fontSize": 18,
+                  "fontWeight": "normal"
+                },
+                {
+                  "type": "text",
+                  "id": "Ayfa6",
+                  "name": "minText4",
+                  "fill": "#000000",
+                  "content": "Min： 97",
+                  "fontFamily": "Inter",
+                  "fontSize": 18,
+                  "fontWeight": "normal"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

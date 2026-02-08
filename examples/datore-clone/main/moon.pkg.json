@@ -1,0 +1,7 @@
+{
+  "is-main": true,
+  "import": [
+    { "path": "Yoorkin/rabbit-tea", "alias": "tea" },
+    "Yoorkin/rabbit-tea/html"
+  ]
+}
