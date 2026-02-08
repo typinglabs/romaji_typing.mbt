@@ -9,6 +9,11 @@ struct ResultViewModel {
 }
 
 ///|
+fn weak_keys_to_string(weak_keys : Array[(String, Int)]) -> String {
+  weak_keys.map(pair => "\{pair.0}(\{pair.1})").join(" ")
+}
+
+///|
 fn result_view(model : ResultViewModel) -> Html[Msg] {
   div([
     h2(class="text-lg font-bold mb-2", [text("終了画面")]),

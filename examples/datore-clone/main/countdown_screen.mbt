@@ -8,7 +8,6 @@ struct CountdownViewModel {
 ///|
 fn countdown_view(model : CountdownViewModel) -> Html[Msg] {
   div([
-    h2(class="text-lg font-bold mb-2", [text("カウントダウン画面")]),
     div(class="w-[950px] bg-[#CCCCCC] p-5 flex flex-col gap-5", [
       div(class="flex justify-around items-center h-[80px] px-5", [
         div(class="flex shrink-0 items-center gap-3 w-[200px]", [

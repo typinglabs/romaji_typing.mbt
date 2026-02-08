@@ -14,11 +14,18 @@ using @html {type Html}
 enum Msg {
   // Increment
   // Decrement
+  Home(HomeMsg)
 }
 
 ///|
 fn update(_msg : Msg, model : Model) -> (Cmd[Msg], Model) {
-  (none(), model)
+  match _msg {
+    Home(home_msg) =>
+      match home_msg {
+        HomeMsg::StartGame =>
+          (none(), Model::Countdown({ count: 3, max_score: 0, min_score: 0 }))
+      }
+  }
 }
 
 ///|
@@ -30,14 +37,9 @@ enum Model {
 }
 
 ///|
-fn weak_keys_to_string(weak_keys : Array[(String, Int)]) -> String {
-  weak_keys.map(pair => "\{pair.0}(\{pair.1})").join(" ")
-}
-
-///|
 fn view(model : Model) -> Html[Msg] {
-  let view = match model {
-    Home(model) => home_view(model)
+  let view : @html.Html[Msg] = match model {
+    Home(model) => home_view(model).map(Home(_))
     Typing(model) => typing_view(model)
     Countdown(model) => countdown_view(model)
     Result(model) => result_view(model)
@@ -69,11 +71,6 @@ fn main {
       remaining_kanji: "である。名前はまだ無い。",
     },
   }
-  let countdown_model : CountdownViewModel = {
-    count: 3,
-    max_score: 0,
-    min_score: 0,
-  }
   let result_model : ResultViewModel = {
     hits: 97,
     misses: 6,
@@ -82,9 +79,9 @@ fn main {
     max_score: 0,
     min_score: 0,
   }
-  // let model : Model = Home(initial_model)
+  let model : Model = Home(initial_model)
   // let model : Model = Model::Typing(typing_model)
   // let model : Model = Model::Countdown(countdown_model)
-  let model : Model = Model::Result(result_model)
+  // let model : Model = Model::Result(result_model)
   @tea.startup(model~, update~, view~)
 }

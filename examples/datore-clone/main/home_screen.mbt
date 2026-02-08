@@ -8,9 +8,13 @@ struct HomeViewModel {
 }
 
 ///|
-fn home_view(model : HomeViewModel) -> Html[Msg] {
+enum HomeMsg {
+  StartGame
+}
+
+///|
+fn home_view(model : HomeViewModel) -> Html[HomeMsg] {
   div([
-    h2(class="text-lg font-bold mb-2", [text("スタート画面")]),
     div(class="w-[950px] bg-[#CCCCCC] p-5 flex flex-col gap-5", [
       div(class="flex justify-around items-center h-[80px] px-5", [
         div(class="flex shrink-0 items-center gap-3 w-[200px]", [
@@ -66,6 +70,7 @@ fn home_view(model : HomeViewModel) -> Html[Msg] {
             span(class="text-[18px]", [text("Min： \{model.min_score}")]),
           ]),
           div(
+            click=StartGame,
             class="w-[200px] h-[40px] bg-[#4B5563] rounded-md flex items-center justify-center cursor-pointer",
             [
               span(class="text-[16px] font-bold text-white", [
