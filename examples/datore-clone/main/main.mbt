@@ -108,7 +108,7 @@ fn typing_model_from_countdown(
     score: countdown_model.score,
     hits: 0,
     misses: 0,
-    time_left: 3,
+    time_left: 60,
     typing_state: typing_state_from_kanji(kanji_state, word.display),
     apply_key,
     display: word.display,
