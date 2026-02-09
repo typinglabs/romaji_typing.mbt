@@ -1,8 +1,33 @@
 ///|
-type Word = String
+struct Word {
+  display : String
+  items : Array[@typing.KanjiOrKana]
+}
 
 ///|
-let words : Array[Word] = ["おはよう", "こんにちは", "ありがとう"]
+fn kana_items(text : String) -> Array[@typing.KanjiOrKana] {
+  let items : Array[@typing.KanjiOrKana] = []
+  for ch in text.iter() {
+    items.push(@typing.kana(ch))
+  }
+  items
+}
+
+///|
+let words : Array[Word] = [
+  {
+    display: "作成する",
+    items: [
+      @typing.kanji('作', "さく"),
+      @typing.kanji('成', "せい"),
+      @typing.kana('す'),
+      @typing.kana('る'),
+    ],
+  },
+  { display: "おはよう", items: kana_items("おはよう") },
+  { display: "こんにちは", items: kana_items("こんにちは") },
+  { display: "ありがとう", items: kana_items("ありがとう") },
+]
 
 ///|
 fn create_next_word_fn() -> () -> Word {

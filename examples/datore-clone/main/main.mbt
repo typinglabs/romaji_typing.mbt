@@ -102,14 +102,16 @@ fn stop_typing(next_model : Model) -> (Cmd[Msg], Model) {
 fn typing_model_from_countdown(
   countdown_model : CountdownModel,
 ) -> TypingModel raise Error {
-  let (roman_state, apply_key) = @typing.create_roman_engine(next_word())
+  let word = next_word()
+  let (kanji_state, apply_key) = @typing.create_kanji_engine(word.items)
   {
     score: countdown_model.score,
     hits: 0,
     misses: 0,
     time_left: 3,
-    typing_state: typing_state_from_roman(roman_state),
+    typing_state: typing_state_from_kanji(kanji_state, word.display),
     apply_key,
+    display: word.display,
   }
 }
 

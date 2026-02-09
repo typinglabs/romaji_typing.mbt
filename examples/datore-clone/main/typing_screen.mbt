@@ -13,16 +13,22 @@ struct TypingModel {
   misses : Int
   time_left : Int
   typing_state : TypingState
-  apply_key : @typing.ApplyKeyFn
+  apply_key : @typing.ApplyKanjiKeyFn
+  display : String
 }
 
 ///|
-fn typing_state_from_roman(state : @typing.RomanState) -> TypingState {
+fn typing_state_from_kanji(
+  state : @typing.KanjiState,
+  display : String,
+) -> TypingState raise Error {
+  let typed_kanji = display[0:state.typed_kanji_index].to_string()
+  let remaining_kanji = display[state.typed_kanji_index:].to_string()
   {
     typed_romaji: state.typed_roman,
     remaining_romaji: state.remaining_roman,
-    typed_kanji: state.typed_kana,
-    remaining_kanji: state.remaining_kana,
+    typed_kanji,
+    remaining_kanji,
   }
 }
 
@@ -30,15 +36,16 @@ fn typing_state_from_roman(state : @typing.RomanState) -> TypingState {
 fn apply_typing_key(model : TypingModel, key : Char) -> TypingModel {
   try {
     let (state, result) = (model.apply_key)(key)
-    let next_state = typing_state_from_roman(state)
+    let next_state = typing_state_from_kanji(state, model.display)
     match result {
       @typing.CorrectKey =>
         { ..model, hits: model.hits + 1, typing_state: next_state }
       @typing.WordCompleted => {
         // 次のワードに進む
-        let (state, apply_key) = @typing.create_roman_engine(next_word())
-        let next_state = typing_state_from_roman(state)
-        { ..model, typing_state: next_state, apply_key }
+        let word = next_word()
+        let (state, apply_key) = @typing.create_kanji_engine(word.items)
+        let next_state = typing_state_from_kanji(state, word.display)
+        { ..model, typing_state: next_state, apply_key, display: word.display }
       }
       @typing.WrongKey =>
         { ..model, misses: model.misses + 1, typing_state: next_state }

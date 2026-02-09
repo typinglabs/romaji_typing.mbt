@@ -5,6 +5,16 @@ pub enum KanjiOrKana {
 } derive(Show, Eq)
 
 ///|
+pub fn kanji(ch : Char, reading : String) -> KanjiOrKana {
+  Kanji(ch, reading)
+}
+
+///|
+pub fn kana(ch : Char) -> KanjiOrKana {
+  Kana(ch)
+}
+
+///|
 pub struct KanjiState {
   typed_roman : String
   remaining_roman : String
