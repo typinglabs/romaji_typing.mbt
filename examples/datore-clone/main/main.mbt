@@ -14,6 +14,8 @@ enum Msg {
   TimerTick
   // キーが入力される
   KeyPressed(Char)
+  // ショートカットが入力される
+  UseShortcut(String)
   // ホームに戻る
   BackToHome
 }
@@ -74,6 +76,15 @@ extern "js" fn disable_key_listener() =
   #|}
 
 ///|
+extern "js" fn enable_shortcut_listener(f : (String) -> Unit) =
+  #|(f) => {
+  #|  if (window.__shortcutKeyListener) return;
+  #|  const handler = (e) => f(e.key);
+  #|  window.__shortcutKeyListener = handler;
+  #|  window.addEventListener('keydown', handler);
+  #|}
+
+///|
 fn delay(msg : Msg, ms : Int) -> Cmd[Msg] {
   Cmd(fn(events) { set_timeout(fn() { events.trigger_update(msg) }, ms) })
 }
@@ -101,6 +112,17 @@ fn enable_typing_key_handler() -> Cmd[Msg] {
       match first_char(key_str) {
         Some(key) => events.trigger_update(KeyPressed(key))
         None => ()
+      }
+    })
+  })
+}
+
+///|
+fn enable_shortcut_key_handler() -> Cmd[Msg] {
+  Cmd(fn(events) {
+    enable_shortcut_listener(fn(key_str) {
+      if key_str == "Escape" || key_str == "Enter" {
+        events.trigger_update(UseShortcut(key_str))
       }
     })
   })
@@ -158,6 +180,13 @@ fn update(msg : Msg, model : Model) -> (Cmd[Msg], Model) {
   match (msg, model.screen) {
     (StartGame, Home) =>
       (
+        // ショートカット登録は、アプリ起動時に行えないためここで行う
+        // 1回目はEnterが効かないので、できれば修正したい
+        @tea.batch([enable_shortcut_key_handler(), delay(CountdownTick, 1000)]),
+        model |> update_screen(Countdown({ count: 3 })),
+      )
+    (UseShortcut("Enter"), Home) =>
+      (
         delay(CountdownTick, 1000),
         model |> update_screen(Countdown({ count: 3 })),
       )
@@ -191,6 +220,10 @@ fn update(msg : Msg, model : Model) -> (Cmd[Msg], Model) {
       }
     (KeyPressed(key), Typing(typing_model)) =>
       (none(), { ..model, screen: Typing(apply_typing_key(typing_model, key)) })
+    (UseShortcut("Escape"), Typing(_)) =>
+      (stop_typing(), model |> update_screen(Home))
+    (UseShortcut("Escape"), _) => (none(), model |> update_screen(Home))
+    (UseShortcut("Enter"), Result(_)) => (none(), model |> update_screen(Home))
     (BackToHome, _) => (none(), model |> update_screen(Home))
     _ => (none(), model)
   }
@@ -270,9 +303,10 @@ fn view(model : Model) -> Html[Msg] {
     Typing(typing_model) => typing_view(typing_model, score)
     Result(model) => result_view(model, score)
   }
-  div(class="bg-gray-100 font-inter p-10 flex flex-col items-center gap-10", [
-    view,
-  ])
+  div(
+    class="bg-gray-100 font-inter p-10 flex flex-col items-center gap-10 min-h-screen",
+    [view],
+  )
 }
 
 ///|

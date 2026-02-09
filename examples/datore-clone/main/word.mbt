@@ -11,7 +11,7 @@ fn is_hiragana(ch : Char) -> Bool {
 
 ///|
 fn is_katakana(ch : Char) -> Bool {
-  (ch >= 'ァ' && ch <= 'ヶ')
+  ch >= 'ァ' && ch <= 'ヶ'
 }
 
 ///|
@@ -101,16 +101,10 @@ let words : Array[Word] = {
 }
 
 ///|
-fn create_next_word_fn() -> () -> Word {
-  let mut word_index = 0
-  fn next_word() -> Word {
-    let word = words[word_index]
-    word_index += 1
-    word
-  }
-
-  next_word
-}
+let rand : @random.Rand = @random.Rand::new()
 
 ///|
-let next_word : () -> Word = create_next_word_fn()
+fn next_word() -> Word {
+  let index = rand.int(limit=words.length())
+  return words[index]
+}
