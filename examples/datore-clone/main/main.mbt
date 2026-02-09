@@ -4,11 +4,6 @@ using @tea {none}
 ///|
 using @tea {type Cmd}
 
-///|
-using @html {type Html}
-
-///|
-using @html {div}
 
 ///|
 enum Msg {
@@ -186,7 +181,7 @@ fn update(msg : Msg, model : Model) -> (Cmd[Msg], Model) {
 
 ///|
 fn view(model : Model) -> Html[Msg] {
-  let view : @html.Html[Msg] = match model.screen {
+  let view : Html[Msg] = match model.screen {
     Home => home_view(model.score)
     Countdown(model) => countdown_view(model)
     Typing(model) => typing_view(model)
