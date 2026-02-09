@@ -12,18 +12,31 @@ using @html {div}
 
 ///|
 enum Msg {
-  Home(HomeMsg)
-  Countdown(CountdownMsg)
-  Typing(TypingMsg)
-  Result(ResultMsg)
+  // Home(HomeMsg)
+  // ゲームを開始する
+  StartGame
+  // カウントダウンを進める
+  CountdownTick
+  // ゲーム中のタイマーを進める
+  TimerTick
+  // キーが入力される
+  KeyPressed(Char)
+  // ゲームをリスタートする
+  RestartTyping
 }
 
 ///|
-enum Model {
-  Home(HomeViewModel)
+enum Screen {
+  Home
   Countdown(CountdownViewModel)
   Typing(TypingViewModel)
   Result(ResultViewModel)
+}
+
+///|
+struct Model {
+  score : Score
+  screen : Screen
 }
 
 ///|
@@ -31,21 +44,21 @@ extern "js" fn set_timeout(f : () -> Unit, ms : Int) =
   #|(f, ms) => setTimeout(f, ms)
 
 ///|
-extern "js" fn enable_key_logger() =
-  #|() => {
-  #|  if (window.__typingKeyLogger) return;
-  #|  const handler = (e) => console.log(e.key);
-  #|  window.__typingKeyLogger = handler;
+extern "js" fn enable_key_listener(f : (String) -> Unit) =
+  #|(f) => {
+  #|  if (window.__typingKeyListener) return;
+  #|  const handler = (e) => f(e.key);
+  #|  window.__typingKeyListener = handler;
   #|  window.addEventListener('keydown', handler);
   #|}
 
 ///|
-extern "js" fn disable_key_logger() =
+extern "js" fn disable_key_listener() =
   #|() => {
-  #|  const handler = window.__typingKeyLogger;
+  #|  const handler = window.__typingKeyListener;
   #|  if (!handler) return;
   #|  window.removeEventListener('keydown', handler);
-  #|  window.__typingKeyLogger = null;
+  #|  window.__typingKeyListener = null;
   #|}
 
 ///|
@@ -59,37 +72,50 @@ fn run_effect(effect : () -> Unit) -> Cmd[Msg] {
 }
 
 ///|
-fn start_typing(model : TypingViewModel) -> (Cmd[Msg], Model) {
-  (
-    @tea.batch([
-      run_effect(enable_key_logger),
-      delay(Typing(TypingMsg::Tick), 1000),
-    ]),
-    Typing(model),
-  )
+fn first_char(text : String) -> Char? {
+  for ch in text.iter() {
+    return Some(ch)
+  }
+  None
+}
+
+///|
+fn enable_typing_key_handler() -> Cmd[Msg] {
+  Cmd(fn(events) {
+    enable_key_listener(fn(key_str) {
+      if key_str[:].length() != 1 {
+        return
+      }
+      match first_char(key_str) {
+        Some(key) => events.trigger_update(KeyPressed(key))
+        None => ()
+      }
+    })
+  })
+}
+
+///|
+fn start_typing(model : Model) -> (Cmd[Msg], Model) {
+  (@tea.batch([enable_typing_key_handler(), delay(TimerTick, 1000)]), model)
 }
 
 ///|
 fn stop_typing(next_model : Model) -> (Cmd[Msg], Model) {
-  (run_effect(disable_key_logger), next_model)
+  (run_effect(disable_key_listener), next_model)
 }
 
 ///|
 fn typing_model_from_countdown(
   countdown_model : CountdownViewModel,
-) -> TypingViewModel {
+) -> TypingViewModel raise Error {
+  let (roman_state, apply_key) = @typing.create_roman_engine("こんにちは")
   {
+    score: countdown_model.score,
     hits: 0,
     misses: 0,
     time_left: 3,
-    max_score: countdown_model.max_score,
-    min_score: countdown_model.min_score,
-    typing_state: {
-      typed_romaji: "wagahaihaneko",
-      typed_kanji: "吾輩は猫",
-      remaining_romaji: "earu.namaehamadanai.",
-      remaining_kanji: "である。名前はまだ無い。",
-    },
+    typing_state: typing_state_from_roman(roman_state),
+    apply_key,
   }
 }
 
@@ -100,58 +126,71 @@ fn result_model_from_typing(typing_model : TypingViewModel) -> ResultViewModel {
     misses: typing_model.misses,
     time_left: 0,
     weak_keys: [("s", 3), ("u", 2), ("k", 1)],
-    max_score: typing_model.max_score,
-    min_score: typing_model.min_score,
+    score: typing_model.score,
   }
 }
 
 ///|
 fn update(msg : Msg, model : Model) -> (Cmd[Msg], Model) {
-  match (msg, model) {
-    (Home(HomeMsg::StartGame), Home(home_model)) =>
+  match (msg, model.screen) {
+    (StartGame, Home) =>
       (
-        delay(Countdown(CountdownMsg::Tick), 1000),
-        Countdown({
-          count: 3,
-          max_score: home_model.max_score,
-          min_score: home_model.min_score,
-        }),
+        delay(CountdownTick, 1000),
+        { ..model, screen: Countdown({ count: 3, score: model.score }) },
       )
-    (Countdown(CountdownMsg::StartCountDown), Countdown(_)) =>
-      (delay(Countdown(CountdownMsg::Tick), 1000), model)
-    (Countdown(CountdownMsg::Tick), Countdown(countdown_model)) =>
+    (CountdownTick, Countdown(countdown_model)) =>
       if countdown_model.count > 1 {
         (
-          delay(Countdown(CountdownMsg::Tick), 1000),
-          Countdown({ ..countdown_model, count: countdown_model.count - 1 }),
+          delay(CountdownTick, 1000),
+          {
+            ..model,
+            screen: Countdown({
+              ..countdown_model,
+              count: countdown_model.count - 1,
+            }),
+          },
         )
       } else {
-        start_typing(typing_model_from_countdown(countdown_model))
+        start_typing({
+          ..model,
+          screen: Typing(typing_model_from_countdown(countdown_model)),
+        }) catch {
+          _ => (none(), model)
+        }
       }
-    (Typing(TypingMsg::Stop), Typing(typing_model)) =>
-      stop_typing(Result(result_model_from_typing(typing_model)))
-    (Typing(TypingMsg::Tick), Typing(typing_model)) =>
+    (TimerTick, Typing(typing_model)) =>
       if typing_model.time_left > 1 {
         (
-          delay(Typing(TypingMsg::Tick), 1000),
-          Typing({ ..typing_model, time_left: typing_model.time_left - 1 }),
+          delay(TimerTick, 1000),
+          {
+            ..model,
+            screen: Typing({
+              ..typing_model,
+              time_left: typing_model.time_left - 1,
+            }),
+          },
         )
       } else {
-        stop_typing(Result(result_model_from_typing(typing_model)))
+        stop_typing({
+          ..model,
+          screen: Result(result_model_from_typing(typing_model)),
+        })
       }
-    (Typing(_), _) => (none(), model)
-    (Result(_), _) => (none(), model)
+    (KeyPressed(key), Typing(typing_model)) =>
+      (none(), { ..model, screen: Typing(apply_typing_key(typing_model, key)) })
+    // TODO:
+    (RestartTyping, _) => (none(), model)
     _ => (none(), model)
   }
 }
 
 ///|
 fn view(model : Model) -> Html[Msg] {
-  let view : @html.Html[Msg] = match model {
-    Home(model) => home_view(model).map(Home(_))
-    Countdown(model) => countdown_view(model).map(Countdown(_))
-    Typing(model) => typing_view(model).map(Typing(_))
-    Result(model) => result_view(model).map(Result(_))
+  let view : @html.Html[Msg] = match model.screen {
+    Home => home_view(model.score)
+    Countdown(model) => countdown_view(model)
+    Typing(model) => typing_view(model)
+    Result(model) => result_view(model)
   }
   div(class="bg-gray-100 font-inter p-10 flex flex-col items-center gap-10", [
     view,
@@ -160,13 +199,6 @@ fn view(model : Model) -> Html[Msg] {
 
 ///|
 fn main {
-  let initial_model : HomeViewModel = {
-    hits: 0,
-    misses: 0,
-    time_left: 0,
-    max_score: 0,
-    min_score: 0,
-  }
-  let model : Model = Home(initial_model)
+  let model : Model = { score: { max_score: 0, min_score: 0 }, screen: Home }
   @tea.startup(model~, update~, view~)
 }

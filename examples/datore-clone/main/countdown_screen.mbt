@@ -1,18 +1,11 @@
 ///|
 struct CountdownViewModel {
+  score : Score
   count : Int
-  max_score : Int
-  min_score : Int
 }
 
 ///|
-enum CountdownMsg {
-  StartCountDown
-  Tick
-}
-
-///|
-fn countdown_view(model : CountdownViewModel) -> @html.Html[CountdownMsg] {
+fn countdown_view(model : CountdownViewModel) -> @html.Html[Msg] {
   @html.div([
     @html.div(class="w-[950px] bg-[#CCCCCC] p-5 flex flex-col gap-5", [
       @html.div(class="flex justify-around items-center h-[80px] px-5", [
@@ -25,7 +18,9 @@ fn countdown_view(model : CountdownViewModel) -> @html.Html[CountdownMsg] {
               ]),
             ],
           ),
-          @html.span(class="text-[22px] whitespace-nowrap", [@html.text("打鍵")]),
+          @html.span(class="text-[22px] whitespace-nowrap", [
+            @html.text("打鍵"),
+          ]),
         ]),
         @html.div(class="flex shrink-0 items-center gap-3 w-[150px]", [
           @html.div(
@@ -36,7 +31,9 @@ fn countdown_view(model : CountdownViewModel) -> @html.Html[CountdownMsg] {
               ]),
             ],
           ),
-          @html.span(class="text-[22px] whitespace-nowrap", [@html.text("ミス")]),
+          @html.span(class="text-[22px] whitespace-nowrap", [
+            @html.text("ミス"),
+          ]),
         ]),
         @html.div(class="flex shrink-0 items-center gap-3 w-[200px]", [
           @html.div(
@@ -47,7 +44,9 @@ fn countdown_view(model : CountdownViewModel) -> @html.Html[CountdownMsg] {
               ]),
             ],
           ),
-          @html.span(class="text-[22px] whitespace-nowrap", [@html.text("残り時間")]),
+          @html.span(class="text-[22px] whitespace-nowrap", [
+            @html.text("残り時間"),
+          ]),
         ]),
       ]),
       @html.div(
@@ -58,13 +57,18 @@ fn countdown_view(model : CountdownViewModel) -> @html.Html[CountdownMsg] {
           ]),
         ],
       ),
-      @html.div(class="w-full h-[70px] bg-white flex items-center px-[30px] py-5", [
-        @html.span(class="text-[20px] font-bold", [@html.text("")]),
-      ]),
+      @html.div(
+        class="w-full h-[70px] bg-white flex items-center px-[30px] py-5",
+        [@html.span(class="text-[20px] font-bold", [@html.text("")])],
+      ),
       @html.div(class="w-full h-[60px] bg-[#DDDDDD] flex items-center px-5", [
         @html.div(class="flex items-center gap-5", [
-          @html.span(class="text-[18px]", [@html.text("Max： \{model.max_score}")]),
-          @html.span(class="text-[18px]", [@html.text("Min： \{model.min_score}")]),
+          @html.span(class="text-[18px]", [
+            @html.text("Max： \{model.score.max_score}"),
+          ]),
+          @html.span(class="text-[18px]", [
+            @html.text("Min： \{model.score.min_score}"),
+          ]),
         ]),
       ]),
     ]),

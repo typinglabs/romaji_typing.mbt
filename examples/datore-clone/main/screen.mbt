@@ -1,52 +1,13 @@
 ///|
-struct TypingState {
-  typed_romaji : String
-  remaining_romaji : String
-  typed_kanji : String
-  remaining_kanji : String
-}
-
-///|
-struct TypingViewModel {
-  score : Score
+struct ScreenProps {
   hits : Int
   misses : Int
   time_left : Int
-  typing_state : TypingState
-  apply_key : @typing.ApplyKeyFn
+  score : Score
 }
 
 ///|
-fn typing_state_from_roman(state : @typing.RomanState) -> TypingState {
-  {
-    typed_romaji: state.typed_roman,
-    remaining_romaji: state.remaining_roman,
-    typed_kanji: state.typed_kana,
-    remaining_kanji: state.remaining_kana,
-  }
-}
-
-///|
-fn apply_typing_key(model : TypingViewModel, key : Char) -> TypingViewModel {
-  try {
-    let (state, result) = (model.apply_key)(key)
-    let next_state = typing_state_from_roman(state)
-    match result {
-      @typing.CorrectKey =>
-        { ..model, hits: model.hits + 1, typing_state: next_state }
-      @typing.WordCompleted =>
-        { ..model, hits: model.hits + 1, typing_state: next_state }
-      @typing.WrongKey =>
-        { ..model, misses: model.misses + 1, typing_state: next_state }
-    }
-  } catch {
-    _ => model
-  }
-}
-
-///|
-fn typing_view(model : TypingViewModel) -> @html.Html[Msg] {
-  let typing_state = model.typing_state
+fn screen(props : ScreenProps) -> Html[Msg] {
   @html.div([
     @html.div(class="w-[950px] bg-[#CCCCCC] p-5 flex flex-col gap-5", [
       @html.div(class="flex justify-around items-center h-[80px] px-5", [
@@ -55,7 +16,7 @@ fn typing_view(model : TypingViewModel) -> @html.Html[Msg] {
             class="w-[150px] h-[60px] bg-white rounded-lg flex items-center justify-center shrink-0",
             [
               @html.span(class="text-[36px] font-bold text-gray-500", [
-                @html.text(model.hits.to_string()),
+                @html.text(props.hits.to_string()),
               ]),
             ],
           ),
@@ -68,7 +29,7 @@ fn typing_view(model : TypingViewModel) -> @html.Html[Msg] {
             class="w-[120px] h-[60px] bg-white rounded-lg flex items-center justify-center shrink-0",
             [
               @html.span(class="text-[36px] font-bold text-gray-500", [
-                @html.text(model.misses.to_string()),
+                @html.text(props.misses.to_string()),
               ]),
             ],
           ),
@@ -81,7 +42,7 @@ fn typing_view(model : TypingViewModel) -> @html.Html[Msg] {
             class="w-[150px] h-[60px] bg-white rounded-lg flex items-center justify-center shrink-0",
             [
               @html.span(class="text-[36px] font-bold text-gray-500", [
-                @html.text(model.time_left.to_string()),
+                @html.text(props.time_left.to_string()),
               ]),
             ],
           ),
@@ -93,36 +54,22 @@ fn typing_view(model : TypingViewModel) -> @html.Html[Msg] {
       @html.div(
         class="w-full h-[70px] bg-white flex flex-col justify-center px-[30px]",
         [
-          @html.div(class="flex items-center", [
-            @html.span(class="text-[28px] font-bold text-[#999999]", [
-              @html.text(typing_state.typed_kanji),
-            ]),
-            @html.span(class="text-[28px] font-bold text-black", [
-              @html.text(typing_state.remaining_kanji),
-            ]),
+          @html.div(class="flex items-center gap-2.5", [
+            @html.span(class="text-[20px] font-bold", [@html.text("")]),
           ]),
         ],
       ),
       @html.div(
         class="w-full h-[70px] bg-white flex items-center px-[30px] py-5",
-        [
-          @html.div(class="flex items-center", [
-            @html.span(class="text-[24px] text-[#999999]", [
-              @html.text(typing_state.typed_romaji),
-            ]),
-            @html.span(class="text-[24px] text-[#333333]", [
-              @html.text(typing_state.remaining_romaji),
-            ]),
-          ]),
-        ],
+        [@html.span(class="text-[20px] font-bold", [@html.text("")])],
       ),
       @html.div(class="w-full h-[60px] bg-[#DDDDDD] flex items-center px-5", [
         @html.div(class="flex items-center gap-5", [
           @html.span(class="text-[18px]", [
-            @html.text("Max： \{model.score.max_score}"),
+            @html.text("Max： \{props.score.max_score}"),
           ]),
           @html.span(class="text-[18px]", [
-            @html.text("Min： \{model.score.min_score}"),
+            @html.text("Min： \{props.score.min_score}"),
           ]),
         ]),
       ]),

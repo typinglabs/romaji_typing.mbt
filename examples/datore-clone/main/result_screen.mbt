@@ -4,13 +4,7 @@ struct ResultViewModel {
   misses : Int
   time_left : Int
   weak_keys : Array[(String, Int)]
-  max_score : Int
-  min_score : Int
-}
-
-///|
-enum ResultMsg {
-  Noop
+  score : Score
 }
 
 ///|
@@ -19,7 +13,7 @@ fn weak_keys_to_string(weak_keys : Array[(String, Int)]) -> String {
 }
 
 ///|
-fn result_view(model : ResultViewModel) -> @html.Html[ResultMsg] {
+fn result_view(model : ResultViewModel) -> @html.Html[Msg] {
   @html.div([
     @html.div(class="w-[950px] bg-[#CCCCCC] p-5 flex flex-col gap-5", [
       @html.div(class="flex justify-around items-center h-[80px] px-5", [
@@ -86,10 +80,10 @@ fn result_view(model : ResultViewModel) -> @html.Html[ResultMsg] {
         [
           @html.div(class="flex items-center gap-5", [
             @html.span(class="text-[18px]", [
-              @html.text("Max： \{model.max_score}"),
+              @html.text("Max： \{model.score.max_score}"),
             ]),
             @html.span(class="text-[18px]", [
-              @html.text("Min： \{model.min_score}"),
+              @html.text("Min： \{model.score.min_score}"),
             ]),
           ]),
           @html.div(
