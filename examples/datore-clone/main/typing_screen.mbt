@@ -8,7 +8,6 @@ struct TypingState {
 
 ///|
 struct TypingModel {
-  score : Score
   hits : Int
   misses : Int
   time_left : Int
@@ -46,12 +45,7 @@ fn apply_typing_key(model : TypingModel, key : Char) -> TypingModel {
         let word = next_word()
         let (state, apply_key) = @typing.create_kanji_engine(word.items)
         let next_state = typing_state_from_kanji(state, word.display)
-        {
-          ..model,
-          typing_state: next_state,
-          apply_key,
-          display: word.display,
-        }
+        { ..model, typing_state: next_state, apply_key, display: word.display }
       }
       @typing.WrongKey => {
         let weak_keys = model.weak_keys
@@ -74,7 +68,7 @@ fn apply_typing_key(model : TypingModel, key : Char) -> TypingModel {
 }
 
 ///|
-fn typing_view(model : TypingModel) -> Html[Msg] {
+fn typing_view(model : TypingModel, score : Score) -> Html[Msg] {
   let typing_state = model.typing_state
   let kana_row = div(class="flex items-center", [
     span(class="text-[28px] font-bold text-[#999999]", [
@@ -96,7 +90,7 @@ fn typing_view(model : TypingModel) -> Html[Msg] {
     time_left: model.time_left,
     kana_row,
     roman_row,
-    score: model.score,
+    score,
     footer_button: None,
   })
 }

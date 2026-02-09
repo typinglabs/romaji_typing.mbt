@@ -6,7 +6,6 @@ using @tea {type Cmd}
 
 ///|
 enum Msg {
-  // Home(HomeMsg)
   // ゲームを開始する
   StartGame
   // カウントダウンを進める
@@ -17,6 +16,25 @@ enum Msg {
   KeyPressed(Char)
   // ホームに戻る
   BackToHome
+}
+
+///|
+struct Score {
+  max_score : Int
+  min_score : Int
+}
+
+///|
+struct CountdownModel {
+  count : Int
+}
+
+///|
+struct ResultModel {
+  hits : Int
+  misses : Int
+  time_left : Int
+  weak_keys : Array[(String, Int)]
 }
 
 ///|
@@ -89,23 +107,20 @@ fn enable_typing_key_handler() -> Cmd[Msg] {
 }
 
 ///|
-fn start_typing(model : Model) -> (Cmd[Msg], Model) {
-  (@tea.batch([enable_typing_key_handler(), delay(TimerTick, 1000)]), model)
+fn start_typing() -> Cmd[Msg] {
+  @tea.batch([enable_typing_key_handler(), delay(TimerTick, 1000)])
 }
 
 ///|
-fn stop_typing(next_model : Model) -> (Cmd[Msg], Model) {
-  (run_effect(disable_key_listener), next_model)
+fn stop_typing() -> Cmd[Msg] {
+  run_effect(disable_key_listener)
 }
 
 ///|
-fn typing_model_from_countdown(
-  countdown_model : CountdownModel,
-) -> TypingModel raise Error {
+fn build_typing_model() -> TypingModel raise Error {
   let word = next_word()
   let (kanji_state, apply_key) = @typing.create_kanji_engine(word.items)
   {
-    score: countdown_model.score,
     hits: 0,
     misses: 0,
     time_left: 10,
@@ -117,7 +132,7 @@ fn typing_model_from_countdown(
 }
 
 ///|
-fn result_model_from_typing(typing_model : TypingModel) -> ResultModel {
+fn build_result_model(typing_model : TypingModel) -> ResultModel {
   let entries = typing_model.weak_keys.iter().to_array()
   entries.sort_by((a, b) => b.1.compare(a.1))
   let weak_keys : Array[(String, Int)] = []
@@ -130,8 +145,12 @@ fn result_model_from_typing(typing_model : TypingModel) -> ResultModel {
     misses: typing_model.misses,
     time_left: 0,
     weak_keys,
-    score: typing_model.score,
   }
+}
+
+///|
+fn update_screen(model : Model, screen : Screen) -> Model {
+  { ..model, screen, }
 }
 
 ///|
@@ -140,61 +159,116 @@ fn update(msg : Msg, model : Model) -> (Cmd[Msg], Model) {
     (StartGame, Home) =>
       (
         delay(CountdownTick, 1000),
-        { ..model, screen: Countdown({ count: 3, score: model.score }) },
+        model |> update_screen(Countdown({ count: 3 })),
       )
     (CountdownTick, Countdown(countdown_model)) =>
       if countdown_model.count > 1 {
         (
           delay(CountdownTick, 1000),
-          {
-            ..model,
-            screen: Countdown({
-              ..countdown_model,
-              count: countdown_model.count - 1,
-            }),
-          },
+          model
+          |> update_screen(Countdown({ count: countdown_model.count - 1 })),
         )
       } else {
-        start_typing({
-          ..model,
-          screen: Typing(typing_model_from_countdown(countdown_model)),
-        }) catch {
-          _ => (none(), model)
-        }
+        (
+          start_typing(),
+          model |> update_screen(Typing(try! build_typing_model())),
+        )
       }
     (TimerTick, Typing(typing_model)) =>
       if typing_model.time_left > 1 {
         (
           delay(TimerTick, 1000),
-          {
-            ..model,
-            screen: Typing({
-              ..typing_model,
-              time_left: typing_model.time_left - 1,
-            }),
-          },
+          model
+          |> update_screen(
+            Typing({ ..typing_model, time_left: typing_model.time_left - 1 }),
+          ),
         )
       } else {
-        stop_typing({
-          ..model,
-          screen: Result(result_model_from_typing(typing_model)),
-        })
+        (
+          stop_typing(),
+          model |> update_screen(Result(build_result_model(typing_model))),
+        )
       }
     (KeyPressed(key), Typing(typing_model)) =>
       (none(), { ..model, screen: Typing(apply_typing_key(typing_model, key)) })
-    // TODO:
-    (BackToHome, _) => (none(), { ..model, screen: Home })
+    (BackToHome, _) => (none(), model |> update_screen(Home))
     _ => (none(), model)
   }
 }
 
 ///|
+fn home_view(score : Score) -> Html[Msg] {
+  let footer_button = div(
+    click=StartGame,
+    class="w-[200px] h-[40px] bg-[#4B5563] rounded-md flex items-center justify-center cursor-pointer",
+    [
+      span(class="text-[16px] font-bold text-white", [
+        text("スタート (Enter)"),
+      ]),
+    ],
+  )
+  screen({
+    hits: 0,
+    misses: 0,
+    time_left: 0,
+    kana_row: div([]),
+    roman_row: div([]),
+    score,
+    footer_button: Some(footer_button),
+  })
+}
+
+///|
+fn countdown_view(count : Int, score : Score) -> Html[Msg] {
+  screen({
+    hits: count,
+    misses: count,
+    time_left: count,
+    kana_row: div([]),
+    roman_row: div([]),
+    score,
+    footer_button: None,
+  })
+}
+
+///|
+fn result_view(model : ResultModel, score : Score) -> Html[Msg] {
+  let kana_row = div(class="flex items-center gap-2.5", [
+    span(class="text-[20px] font-bold", [
+      text("Time Out!! お疲れさまでした"),
+    ]),
+  ])
+  fn weak_keys_to_string(weak_keys : Array[(String, Int)]) -> String {
+    weak_keys.map(pair => "\{pair.0}(\{pair.1})").join("　")
+  }
+
+  let roman_row = span(class="text-[20px] font-bold", [
+    text("苦手キー：\{weak_keys_to_string(model.weak_keys)}"),
+  ])
+  let footer_button : Html[Msg] = div(
+    click=BackToHome,
+    class="w-[200px] h-[40px] bg-[#4B5563] rounded-md flex items-center justify-center cursor-pointer",
+    [span(class="text-[16px] font-bold text-white", [text("戻る (Enter)")])],
+  )
+  screen({
+    hits: model.hits,
+    misses: model.misses,
+    time_left: model.time_left,
+    kana_row,
+    roman_row,
+    score,
+    footer_button: Some(footer_button),
+  })
+}
+
+///|
 fn view(model : Model) -> Html[Msg] {
+  let score = model.score
   let view : Html[Msg] = match model.screen {
-    Home => home_view(model.score)
-    Countdown(model) => countdown_view(model)
-    Typing(model) => typing_view(model)
-    Result(model) => result_view(model)
+    Home => home_view(score)
+    Countdown(model) => countdown_view(model.count, score)
+    Typing(typing_model) => typing_view(typing_model, score)
+    Result(model) => result_view(model, score)
   }
   div(class="bg-gray-100 font-inter p-10 flex flex-col items-center gap-10", [
     view,
