@@ -1,0 +1,10 @@
+{
+  "name": "datore-clone",
+  "deps": {
+    "Yoorkin/rabbit-tea": "0.10.11",
+    "typinglabs/romaji_typing": {
+      "path": "../../"
+    }
+  },
+  "preferred-target": "js"
+}
