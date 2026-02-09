@@ -1,11 +1,11 @@
 ///|
-struct CountdownViewModel {
+struct CountdownModel {
   score : Score
   count : Int
 }
 
 ///|
-fn countdown_view(model : CountdownViewModel) -> Html[Msg] {
+fn countdown_view(model : CountdownModel) -> Html[Msg] {
   let { count, score } = model
   screen({
     hits: count,

@@ -7,7 +7,7 @@ struct TypingState {
 }
 
 ///|
-struct TypingViewModel {
+struct TypingModel {
   score : Score
   hits : Int
   misses : Int
@@ -27,15 +27,19 @@ fn typing_state_from_roman(state : @typing.RomanState) -> TypingState {
 }
 
 ///|
-fn apply_typing_key(model : TypingViewModel, key : Char) -> TypingViewModel {
+fn apply_typing_key(model : TypingModel, key : Char) -> TypingModel {
   try {
     let (state, result) = (model.apply_key)(key)
     let next_state = typing_state_from_roman(state)
     match result {
       @typing.CorrectKey =>
         { ..model, hits: model.hits + 1, typing_state: next_state }
-      @typing.WordCompleted =>
-        { ..model, hits: model.hits + 1, typing_state: next_state }
+      @typing.WordCompleted => {
+        // 次のワードに進む
+        let (state, apply_key) = @typing.create_roman_engine(next_word())
+        let next_state = typing_state_from_roman(state)
+        { ..model, typing_state: next_state, apply_key }
+      }
       @typing.WrongKey =>
         { ..model, misses: model.misses + 1, typing_state: next_state }
     }
@@ -45,7 +49,7 @@ fn apply_typing_key(model : TypingViewModel, key : Char) -> TypingViewModel {
 }
 
 ///|
-fn typing_view(model : TypingViewModel) -> Html[Msg] {
+fn typing_view(model : TypingModel) -> Html[Msg] {
   let typing_state = model.typing_state
   let kana_row = div(class="flex items-center", [
     span(class="text-[28px] font-bold text-[#999999]", [
@@ -56,9 +60,7 @@ fn typing_view(model : TypingViewModel) -> Html[Msg] {
     ]),
   ])
   let roman_row = div(class="flex items-center", [
-    span(class="text-[24px] text-[#999999]", [
-      text(typing_state.typed_romaji),
-    ]),
+    span(class="text-[24px] text-[#999999]", [text(typing_state.typed_romaji)]),
     span(class="text-[24px] text-[#333333]", [
       text(typing_state.remaining_romaji),
     ]),

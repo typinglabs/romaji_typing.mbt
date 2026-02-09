@@ -1,5 +1,5 @@
 ///|
-struct ResultViewModel {
+struct ResultModel {
   hits : Int
   misses : Int
   time_left : Int
@@ -13,7 +13,7 @@ fn weak_keys_to_string(weak_keys : Array[(String, Int)]) -> String {
 }
 
 ///|
-fn result_view(model : ResultViewModel) -> Html[Msg] {
+fn result_view(model : ResultModel) -> Html[Msg] {
   let kana_row = div(class="flex items-center gap-2.5", [
     span(class="text-[20px] font-bold", [
       text("Time Out!! お疲れさまでした"),

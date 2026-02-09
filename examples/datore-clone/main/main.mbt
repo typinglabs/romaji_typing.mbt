@@ -4,7 +4,6 @@ using @tea {none}
 ///|
 using @tea {type Cmd}
 
-
 ///|
 enum Msg {
   // Home(HomeMsg)
@@ -23,9 +22,9 @@ enum Msg {
 ///|
 enum Screen {
   Home
-  Countdown(CountdownViewModel)
-  Typing(TypingViewModel)
-  Result(ResultViewModel)
+  Countdown(CountdownModel)
+  Typing(TypingModel)
+  Result(ResultModel)
 }
 
 ///|
@@ -101,9 +100,9 @@ fn stop_typing(next_model : Model) -> (Cmd[Msg], Model) {
 
 ///|
 fn typing_model_from_countdown(
-  countdown_model : CountdownViewModel,
-) -> TypingViewModel raise Error {
-  let (roman_state, apply_key) = @typing.create_roman_engine("こんにちは")
+  countdown_model : CountdownModel,
+) -> TypingModel raise Error {
+  let (roman_state, apply_key) = @typing.create_roman_engine(next_word())
   {
     score: countdown_model.score,
     hits: 0,
@@ -115,7 +114,7 @@ fn typing_model_from_countdown(
 }
 
 ///|
-fn result_model_from_typing(typing_model : TypingViewModel) -> ResultViewModel {
+fn result_model_from_typing(typing_model : TypingModel) -> ResultModel {
   {
     hits: typing_model.hits,
     misses: typing_model.misses,
