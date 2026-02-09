@@ -15,6 +15,7 @@ struct TypingModel {
   typing_state : TypingState
   apply_key : @typing.ApplyKanjiKeyFn
   display : String
+  weak_keys : Map[Char, Int]
 }
 
 ///|
@@ -45,10 +46,27 @@ fn apply_typing_key(model : TypingModel, key : Char) -> TypingModel {
         let word = next_word()
         let (state, apply_key) = @typing.create_kanji_engine(word.items)
         let next_state = typing_state_from_kanji(state, word.display)
-        { ..model, typing_state: next_state, apply_key, display: word.display }
+        {
+          ..model,
+          typing_state: next_state,
+          apply_key,
+          display: word.display,
+        }
       }
-      @typing.WrongKey =>
-        { ..model, misses: model.misses + 1, typing_state: next_state }
+      @typing.WrongKey => {
+        let weak_keys = model.weak_keys
+        let expected = next_state.remaining_romaji[0].unsafe_to_char()
+        match weak_keys.get(expected) {
+          Some(count) => weak_keys.set(expected, count + 1)
+          None => weak_keys.set(expected, 1)
+        }
+        {
+          ..model,
+          misses: model.misses + 1,
+          typing_state: next_state,
+          weak_keys,
+        }
+      }
     }
   } catch {
     _ => model

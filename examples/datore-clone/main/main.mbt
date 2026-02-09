@@ -15,8 +15,8 @@ enum Msg {
   TimerTick
   // キーが入力される
   KeyPressed(Char)
-  // ゲームをリスタートする
-  RestartTyping
+  // ホームに戻る
+  BackToHome
 }
 
 ///|
@@ -108,20 +108,28 @@ fn typing_model_from_countdown(
     score: countdown_model.score,
     hits: 0,
     misses: 0,
-    time_left: 60,
+    time_left: 10,
     typing_state: typing_state_from_kanji(kanji_state, word.display),
     apply_key,
     display: word.display,
+    weak_keys: Map::new(),
   }
 }
 
 ///|
 fn result_model_from_typing(typing_model : TypingModel) -> ResultModel {
+  let entries = typing_model.weak_keys.iter().to_array()
+  entries.sort_by((a, b) => b.1.compare(a.1))
+  let weak_keys : Array[(String, Int)] = []
+  let limit = if entries.length() < 5 { entries.length() } else { 5 }
+  for pair in entries[0:limit] {
+    weak_keys.push((pair.0.to_string(), pair.1))
+  }
   {
     hits: typing_model.hits,
     misses: typing_model.misses,
     time_left: 0,
-    weak_keys: [("s", 3), ("u", 2), ("k", 1)],
+    weak_keys,
     score: typing_model.score,
   }
 }
@@ -175,7 +183,7 @@ fn update(msg : Msg, model : Model) -> (Cmd[Msg], Model) {
     (KeyPressed(key), Typing(typing_model)) =>
       (none(), { ..model, screen: Typing(apply_typing_key(typing_model, key)) })
     // TODO:
-    (RestartTyping, _) => (none(), model)
+    (BackToHome, _) => (none(), { ..model, screen: Home })
     _ => (none(), model)
   }
 }

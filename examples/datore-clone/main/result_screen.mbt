@@ -9,7 +9,7 @@ struct ResultModel {
 
 ///|
 fn weak_keys_to_string(weak_keys : Array[(String, Int)]) -> String {
-  weak_keys.map(pair => "\{pair.0}(\{pair.1})").join(" ")
+  weak_keys.map(pair => "\{pair.0}(\{pair.1})").join("　")
 }
 
 ///|
@@ -23,12 +23,9 @@ fn result_view(model : ResultModel) -> Html[Msg] {
     text("苦手キー：\{weak_keys_to_string(model.weak_keys)}"),
   ])
   let footer_button : Html[Msg] = div(
+    click=BackToHome,
     class="w-[200px] h-[40px] bg-[#4B5563] rounded-md flex items-center justify-center cursor-pointer",
-    [
-      span(class="text-[16px] font-bold text-white", [
-        text("リスタート (Esc)"),
-      ]),
-    ],
+    [span(class="text-[16px] font-bold text-white", [text("戻る (Enter)")])],
   )
   screen({
     hits: model.hits,
