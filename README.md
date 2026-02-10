@@ -4,19 +4,17 @@
 
 ## インストール
 
-WIP
-
 ```bash
 moon add typinglabs/romaji_typing
 ```
 
-`moon.pkg.json`でインポートします。
+使用したいパッケージの`moonbit.pkg.josn`でインポートします。
 
 ```json
 {
   "import": [
     {
-      "path": "typinglabs/romaji_typing/src",
+      "path": "typinglabs/romaji_typing",
       "alias": "typing"
     }
   ]
@@ -25,28 +23,27 @@ moon add typinglabs/romaji_typing
 
 ## 使い方
 
-`create_roman_engine`にひらがなを渡して初期化します。
+`create_kana_engine`にひらがなを渡して初期化します。
 
 ```mbt
-let (state, apply) = @typing.create_roman_engine("りんご")
+let (state, apply) = @typing.create_kana_engine("りんご")
 inspect(
   state,
   content=(
-    #|{typed_roman: "", remaining_roman: "ringo", typed_kana: "", remaining_kana: "りんご"}
+    #|{typed_romaji: "", remaining_romaji: "ringo", typed_kana_len: 0}
   ),
 )
 ```
 
-`create_roman_engine`の戻り値は`(RomanState, ApplyKeyFn)`です。
+`create_kana_engine`の戻り値は`(TypingState, ApplyKeyFn)`です。
 
-`RomanState`は、ローマ字タイピングの実装で必要な4つの情報を保持しています。
+`TypingState`は、ローマ字タイピングの実装で必要な3つの情報を保持しています。
 
-- `typed_roman` 入力済みのローマ字
-- `remaining_roman` 残りの部分のローマ字
-- `typed_kana` 入力済みのひらがな
-- `typed_roman` 残りの部分のひらがな
+- `typed_romaji` 入力済みのローマ字
+- `remaining_romaji` 残りの部分のローマ字
+- `typed_kana_len` 入力済みのひらがなの長さ
 
-ユーザーのキー入力を判定するには、`ApplyKeyFn = (Char) -> (RomanState, RomanResult)`にキーを渡します。
+ユーザーのキー入力を判定するには、`ApplyKeyFn = (Char) -> (TypingState, TypingResult)`にキーを渡します。
 
 ```mbt
 let results = []
@@ -63,10 +60,20 @@ inspect(results, content=(
 ))
 ```
 
+## 漢字混じりのワードを使う場合
+
+漢字混じり文でどこまで打ったかを把握したい場合は、`create_kanji_engine`を使います。
+
+`漢{かん}字{じ}`のような注釈付き文字列を渡します。
+
+```mbt
+let (state, apply) = @typing.create_kanji_engine("漢{かん}字{じ}")
+```
+
 ## サンプル
 
-WIP
+[打鍵トレーナーのクローン](./examples/datore-clone)
 
 ## APIドキュメント
 
-WIP
+[mooncakes.io/docs/typinglabs/romaji_typing](https://mooncakes.io/docs/typinglabs/romaji_typing)

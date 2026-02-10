@@ -6,7 +6,7 @@ priv struct Rule {
 }
 
 ///|
-struct ProcessOutput {
+priv struct ProcessOutput {
   buffer : String
   output : String
 } derive(Eq, Show)

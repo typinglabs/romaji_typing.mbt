@@ -1,23 +1,25 @@
 ///|
-pub struct RomanState {
-  typed_roman : String
-  remaining_roman : String
-  typed_kana : String
-  remaining_kana : String
+/// Typing state for a kana input and its romaji progress.
+pub struct TypingState {
+  typed_romaji : String
+  remaining_romaji : String
+  typed_kana_len : Int
 } derive(Show, Eq)
 
 ///|
-pub enum RomanResult {
+/// Result of a key input.
+pub enum TypingResult {
   CorrectKey // 正しいキーを入力
   WrongKey // 間違ったキーを入力
   WordCompleted // 正しいキーを入力して、完了
 } derive(Show, Eq)
 
 ///|
-pub type ApplyKeyFn = (Char) -> (RomanState, RomanResult) raise Error
+/// Function that applies a key and returns next state and result.
+pub type ApplyKeyFn = (Char) -> (TypingState, TypingResult) raise Error
 
 ///|
-priv struct RomanEngine {
+priv struct TypingEngine {
   graph : Graph
   dist : Map[NodeId, Int]
   current : NodeId
@@ -26,30 +28,39 @@ priv struct RomanEngine {
 }
 
 ///|
-pub fn create_roman_engine(
+/// Create a typing engine for a kana string.
+///
+/// # Example
+///
+/// ```mbt check
+/// test {
+///   let (state, apply) = create_kana_engine("りんご")
+///   inspect(state.remaining_romaji, content="ringo")
+///   let (state, _result) = apply('r')
+///   inspect(state.remaining_romaji, content="ingo")
+/// }
+/// ```
+pub fn create_kana_engine(
   kana : String,
-) -> (RomanState, ApplyKeyFn) raise Error {
+) -> (TypingState, ApplyKeyFn) raise Error {
   let (graph, dist) = build_graph_from_kana_with_dist(kana)
   let start_id = get_node_id({ kana_index: 0, buffer: "" })
   let goal_id = get_node_id({ kana_index: kana[:].length(), buffer: "" })
   let guide = shortest_path(graph, dist, start_id, goal_id)
-  let mut engine : RomanEngine = {
+  let mut engine : TypingEngine = {
     graph,
     dist,
     current: start_id,
     goal: goal_id,
     guide,
   }
-  let initial_state : RomanState = {
-    typed_roman: "",
-    remaining_roman: edges_to_string(guide),
-    typed_kana: "",
-    remaining_kana: kana,
+  let initial_state : TypingState = {
+    typed_romaji: "",
+    remaining_romaji: edges_to_string(guide),
+    typed_kana_len: 0,
   }
   let mut current_state = initial_state
-  fn apply_key(
-    key : Char,
-  ) -> (RomanState, RomanResult) raise Error {
+  fn apply_key(key : Char) -> (TypingState, TypingResult) raise Error {
 
     // keyが正しいかどうか判定
     let mut next_edge = None
@@ -74,14 +85,12 @@ pub fn create_roman_engine(
         engine = { ..engine, current: next_id, guide }
 
         // stateを更新する
-        let view = kana[:]
-        let next_state : RomanState = {
-          typed_roman: current_state.typed_roman + key.to_string(),
-          remaining_roman: edges_to_string(guide),
-          typed_kana: view[0:next_node.kana_index].to_string(),
-          remaining_kana: view[next_node.kana_index:].to_string(),
+        let next_state : TypingState = {
+          typed_romaji: current_state.typed_romaji + key.to_string(),
+          remaining_romaji: edges_to_string(guide),
+          typed_kana_len: next_node.kana_index,
         }
-        let result : RomanResult = if next_id == engine.goal {
+        let result : TypingResult = if next_id == engine.goal {
           WordCompleted
         } else if next_node.kana_index < kana.length() {
           CorrectKey
@@ -102,7 +111,7 @@ pub fn create_roman_engine(
 ///|
 test "正解かどうかを判定できる きゅう -> kyuuは正解" {
   let kana = "きゅう"
-  let (_initial_state, apply_key) = create_roman_engine(kana)
+  let (_initial_state, apply_key) = create_kana_engine(kana)
 
   // kyuuと入力する
   let (_state, result) = apply_key('k')
@@ -118,7 +127,7 @@ test "正解かどうかを判定できる きゅう -> kyuuは正解" {
 ///|
 test "正解かどうか判定できる きゅう -> kilyuuは正解" {
   let kana = "きゅう"
-  let (_initial_state, apply_key) = create_roman_engine(kana)
+  let (_initial_state, apply_key) = create_kana_engine(kana)
 
   // kilyuuと入力する
   let (_state, result) = apply_key('k')
@@ -138,7 +147,7 @@ test "正解かどうか判定できる きゅう -> kilyuuは正解" {
 ///|
 test "正解かどうか判定できる きゅう -> kaは不正解" {
   let kana = "きゅう"
-  let (_initial_state, apply_key) = create_roman_engine(kana)
+  let (_initial_state, apply_key) = create_kana_engine(kana)
 
   // kilyuuと入力する
   let (_, result) = apply_key('k')
@@ -150,48 +159,48 @@ test "正解かどうか判定できる きゅう -> kaは不正解" {
 ///|
 test "入力したローマ字を取得できる きゅう -> kyuu" {
   let kana = "きゅう"
-  let (_initial_state, apply_key) = create_roman_engine(kana)
+  let (_initial_state, apply_key) = create_kana_engine(kana)
 
   // kyuuと入力する
   let (state, _result) = apply_key('k')
-  assert_eq(state.typed_roman, "k")
+  assert_eq(state.typed_romaji, "k")
   let (state, _result) = apply_key('y')
-  assert_eq(state.typed_roman, "ky")
+  assert_eq(state.typed_romaji, "ky")
   let (state, _result) = apply_key('u')
-  assert_eq(state.typed_roman, "kyu")
+  assert_eq(state.typed_romaji, "kyu")
   let (state, _result) = apply_key('u')
-  assert_eq(state.typed_roman, "kyuu")
+  assert_eq(state.typed_romaji, "kyuu")
 }
 
 ///|
-test "remaining_romanを取得できる きゅう -> kyuu" {
+test "remaining_romajiを取得できる きゅう -> kyuu" {
   let kana = "きゅう"
-  let (state, apply_key) = create_roman_engine(kana)
-  assert_eq(state.remaining_roman, "kyuu")
+  let (state, apply_key) = create_kana_engine(kana)
+  assert_eq(state.remaining_romaji, "kyuu")
   let (state, _) = apply_key('k')
-  assert_eq(state.remaining_roman, "yuu")
+  assert_eq(state.remaining_romaji, "yuu")
   let (state, _) = apply_key('y')
-  assert_eq(state.remaining_roman, "uu")
+  assert_eq(state.remaining_romaji, "uu")
   let (state, _) = apply_key('u')
-  assert_eq(state.remaining_roman, "u")
+  assert_eq(state.remaining_romaji, "u")
   let (state, _) = apply_key('u')
-  assert_eq(state.remaining_roman, "")
+  assert_eq(state.remaining_romaji, "")
 }
 
 ///|
-test "remaining_romanを取得できる きゅう -> kilyuu" {
+test "remaining_romajiを取得できる きゅう -> kilyuu" {
   let kana = "きゅう"
-  let (_state, apply_key) = create_roman_engine(kana)
+  let (_state, apply_key) = create_kana_engine(kana)
   let (state, _) = apply_key('k')
-  assert_eq(state.remaining_roman, "yuu")
+  assert_eq(state.remaining_romaji, "yuu")
   let (state, _) = apply_key('i')
-  assert_eq(state.remaining_roman, "lyuu")
+  assert_eq(state.remaining_romaji, "lyuu")
   let (state, _) = apply_key('l')
-  assert_eq(state.remaining_roman, "yuu")
+  assert_eq(state.remaining_romaji, "yuu")
   let (state, _) = apply_key('y')
-  assert_eq(state.remaining_roman, "uu")
+  assert_eq(state.remaining_romaji, "uu")
   let (state, _) = apply_key('u')
-  assert_eq(state.remaining_roman, "u")
+  assert_eq(state.remaining_romaji, "u")
   let (state, _) = apply_key('u')
-  assert_eq(state.remaining_roman, "")
+  assert_eq(state.remaining_romaji, "")
 }

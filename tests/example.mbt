@@ -1,10 +1,10 @@
 ///|
 test "example" {
-  let (state, apply) = @typing.create_roman_engine("りんご")
+  let (state, apply) = @typing.create_kana_engine("りんご")
   inspect(
     state,
     content=(
-      #|{typed_roman: "", remaining_roman: "ringo", typed_kana: "", remaining_kana: "りんご"}
+    #|{typed_romaji: "", remaining_romaji: "ringo", typed_kana_len: 0}
     ),
   )
   let results = []

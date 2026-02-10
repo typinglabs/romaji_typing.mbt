@@ -141,14 +141,13 @@ fn stop_typing() -> Cmd[Msg] {
 ///|
 fn build_typing_model() -> TypingModel raise Error {
   let word = next_word()
-  let (kanji_state, apply_key) = @typing.create_kanji_engine(word.items)
+  let (kanji_state, apply_key) = @typing.create_kanji_engine(word)
   {
     hits: 0,
     misses: 0,
     time_left: 10,
-    typing_state: typing_state_from_kanji(kanji_state, word.display),
+    typing_state: typing_state_from_kanji(kanji_state),
     apply_key,
-    display: word.display,
     weak_keys: Map::new(),
   }
 }
