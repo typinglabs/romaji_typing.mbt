@@ -1,8 +1,9 @@
 # Repository Guidelines
 
 ## Project Structure & Module Organization
-- `src/`: MoonBit source files (`*.mbt`). Core modules include `typing.mbt`, `kana_graph.mbt`, and `romaji_table.mbt`.
-- `tests/`: Additional test modules (for example `tests/datore.mbt`).
+- `src/`: MoonBit source files (`*.mbt`). Core modules include `typing.mbt`, `kana_graph.mbt`, `romaji_table.mbt`, and `kanji_typing.mbt`.
+- `tests/`: Test modules (for example `tests/datore.mbt`, `tests/example.mbt`).
+- `examples/datore-clone/`: Frontend example (MoonBit + Vite).
 - `_build/`, `target/`: Build outputs (generated; do not edit).
 - `moon.mod.json`, `src/moon.pkg.json`, `tests/moon.pkg.json`: MoonBit module/package configuration.
 
@@ -10,6 +11,7 @@
 This is a MoonBit project; use the MoonBit CLI (`moon`). Common commands:
 - `moon build`: Build the library.
 - `moon test`: Run all `test "..." { ... }` blocks across `src/` and `tests/`.
+For the frontend example, run a JS package manager in `examples/datore-clone/` and use `npm run dev` (or the equivalent for your package manager) to start Vite.
 If your environment uses different scripts, update this section accordingly.
 
 ## Coding Style & Naming Conventions
