@@ -1,3 +1,4 @@
+///|
 enum KanjiOrKana {
   Kanji(Char, String)
   Kana(Char)
@@ -12,6 +13,7 @@ pub struct KanjiState {
   display : String
 } derive(Show, Eq)
 
+///|
 struct KanjiWord {
   display : String
   items : Array[KanjiOrKana]
@@ -40,6 +42,7 @@ fn katakana_to_hiragana(ch : Char) -> Char {
   }
 }
 
+///|
 fn parse_annotated_word(annotated : String) -> KanjiWord {
   let items : Array[KanjiOrKana] = []
   let display_chars : Array[Char] = []
@@ -155,8 +158,11 @@ pub fn create_kanji_engine(
   let word = parse_annotated_word(annotated)
   let (kana, prefix_lengths) = build_word(word.items)
   let (roman_state, apply_key) = create_kana_engine(kana)
-  let initial_state =
-    kanji_state_from_roman(roman_state, prefix_lengths, word.display)
+  let initial_state = kanji_state_from_roman(
+    roman_state,
+    prefix_lengths,
+    word.display,
+  )
   fn apply_kanji_key(key : Char) -> (KanjiState, TypingResult) raise Error {
     let (next_roman_state, result) = apply_key(key)
     let next_state = kanji_state_from_roman(
