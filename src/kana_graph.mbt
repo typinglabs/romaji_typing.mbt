@@ -30,7 +30,7 @@ fn from_node_id(node_id : String) -> Node raise Error {
 }
 
 ///|
-struct Edge {
+priv struct Edge {
   to : NodeId
   pressed_key : Char
 } derive(Show)
@@ -217,7 +217,10 @@ test "build_kana_graph な" {
 ///|
 test "build_kana_graph あー" {
   let (graph, _) = build_graph_from_kana_with_dist("あー")
-  inspect(graph, content=(
-    #|{"1|": [{to: "2|", pressed_key: '-'}], "0|": [{to: "1|", pressed_key: 'a'}]}
-  ))
+  inspect(
+    graph,
+    content=(
+      #|{"1|": [{to: "2|", pressed_key: '-'}], "0|": [{to: "1|", pressed_key: 'a'}]}
+    ),
+  )
 }

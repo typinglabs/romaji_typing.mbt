@@ -16,7 +16,7 @@ If your environment uses different scripts, update this section accordingly.
 
 ## Coding Style & Naming Conventions
 - Indentation: 2 spaces (as seen in `src/typing.mbt`).
-- Naming: types in `UpperCamelCase`, functions/vars in `snake_case` (for example `create_roman_engine`).
+- Naming: types in `UpperCamelCase`, functions/vars in `snake_case` (for example `create_kana_engine`).
 - Keep functions small and focused; prefer explicit types on public APIs.
 - Comments are short and purposeful; avoid redundant narration.
 

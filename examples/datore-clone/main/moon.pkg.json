@@ -4,6 +4,6 @@
     "moonbitlang/core/random",
     { "path": "Yoorkin/rabbit-tea", "alias": "tea" },
     "Yoorkin/rabbit-tea/html",
-    { "path": "typinglabs/romaji_typing/src", "alias": "typing" }
+    { "path": "typinglabs/romaji_typing", "alias": "typing" }
   ]
 }

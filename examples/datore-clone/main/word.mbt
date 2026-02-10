@@ -1,78 +1,5 @@
 ///|
-struct Word {
-  display : String
-  items : Array[@typing.KanjiOrKana]
-}
-
-///|
-fn is_hiragana(ch : Char) -> Bool {
-  (ch >= 'ぁ' && ch <= 'ゖ') || ch == 'ー'
-}
-
-///|
-fn is_katakana(ch : Char) -> Bool {
-  ch >= 'ァ' && ch <= 'ヶ'
-}
-
-///|
-fn katakana_to_hiragana(ch : Char) -> Char {
-  if is_katakana(ch) {
-    (ch.to_int() - 0x60).unsafe_to_char()
-  } else {
-    ch
-  }
-}
-
-///|
-fn parse_annotated_word(annotated : String) -> Word {
-  let items : Array[@typing.KanjiOrKana] = []
-  let display_chars : Array[Char] = []
-  let chars : Array[Char] = []
-  for ch in annotated.iter() {
-    chars.push(ch)
-  }
-  let mut i = 0
-  while i < chars.length() {
-    let ch = chars[i]
-    if ch == '{' {
-      i += 1
-      continue
-    }
-    if ch == '}' {
-      i += 1
-      continue
-    }
-    if i + 1 < chars.length() && chars[i + 1] == '{' {
-      let mut j = i + 2
-      let mut reading = ""
-      while j < chars.length() && chars[j] != '}' {
-        reading += chars[j].to_string()
-        j += 1
-      }
-      display_chars.push(ch)
-      items.push(@typing.kanji(ch, reading))
-      i = j + 1
-      continue
-    }
-    display_chars.push(ch)
-    if is_hiragana(ch) {
-      items.push(@typing.kana(ch))
-    } else if is_katakana(ch) {
-      items.push(@typing.kana(katakana_to_hiragana(ch)))
-    } else {
-      items.push(@typing.kanji(ch, ""))
-    }
-    i += 1
-  }
-  let mut display = ""
-  for ch in display_chars {
-    display += ch.to_string()
-  }
-  { display, items }
-}
-
-///|
-let words : Array[Word] = {
+let words : Array[String] = {
   let annotated_words : Array[String] = [
     "生{せい}活{かつ}していく中{なか}でインターネットはなくてはならない存{そん}在{ざい}になりました",
     "彼{かれ}なら完{かん}走{そう}する可{か}能{のう}性{せい}はあるがこの調{ちょう}子{し}なら時{じ}間{かん}がかかりそうだ",
@@ -93,18 +20,14 @@ let words : Array[Word] = {
     "町{ちょう}長{ちょう}さんが市{し}長{ちょう}に相{そう}談{だん}したらそれに市{し}長{ちょう}は応{おう}じてくれなかった",
     "将{しょう}来{らい}の健{けん}康{こう}のためにジョギングをすることはすばらしいと感{かん}じています",
   ]
-  let list : Array[Word] = []
-  for w in annotated_words {
-    list.push(parse_annotated_word(w))
-  }
-  list
+  annotated_words
 }
 
 ///|
 let rand : @random.Rand = @random.Rand::new()
 
 ///|
-fn next_word() -> Word {
+fn next_word() -> String {
   let index = rand.int(limit=words.length())
   return words[index]
 }

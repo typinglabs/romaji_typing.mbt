@@ -1,8 +1,9 @@
 {
   "name": "typinglabs/romaji_typing",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "license": "MIT",
   "readme": "README.md",
+  "source": "src/",
   "keywords": ["typing", "romaji"],
   "repository": "https://github.com/typinglabs/romaji_typing.mbt",
   "description": "ローマ字タイピングゲーム用の入力判定ライブラリ"

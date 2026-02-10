@@ -83,7 +83,7 @@ let datore_words : ReadOnlyArray[Word] = [
 ///|
 test "打鍵トレーナーのワードの正誤判定ができること" {
   for word in datore_words {
-    let (_initial_state, apply_key) = @typing.create_roman_engine(word.kana)
+    let (_initial_state, apply_key) = @typing.create_kana_engine(word.kana)
     for key in word.roman {
       let (_, result) = apply_key(key)
       let is_correct = match result {
