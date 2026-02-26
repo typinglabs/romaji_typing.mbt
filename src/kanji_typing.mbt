@@ -154,10 +154,11 @@ fn kanji_state_from_roman(
 /// ```
 pub fn create_kanji_engine(
   annotated : String,
+  options? : TypingOptions = default_typing_options,
 ) -> (KanjiState, ApplyKanjiKeyFn) raise Error {
   let word = parse_annotated_word(annotated)
   let (kana, prefix_lengths) = build_word(word.items)
-  let (roman_state, apply_key) = create_kana_engine(kana)
+  let (roman_state, apply_key) = create_kana_engine(kana, options~)
   let initial_state = kanji_state_from_roman(
     roman_state,
     prefix_lengths,
@@ -213,4 +214,16 @@ test "注釈付きの単語を解析できる" {
     Kana('か'),
     Kana('な'),
   ])
+}
+
+///|
+test "option=trueで末尾んの単語をn1回で完了できる" {
+  let options = { allow_single_n_at_word_end: true }
+  let (_state, apply_key) = create_kanji_engine("漢{かん}", options~)
+  let (_state, result) = apply_key('k')
+  assert_eq(result, CorrectKey)
+  let (_state, result) = apply_key('a')
+  assert_eq(result, CorrectKey)
+  let (_state, result) = apply_key('n')
+  assert_eq(result, WordCompleted)
 }
