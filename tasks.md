@@ -22,6 +22,10 @@
 
 ## Done
 
+- [x] 単語末尾の「ん」を `n` 1回で入力できるオプションを追加する
+  - [x] `TypingOptions` を追加して API を options 必須にする
+  - [x] `kana_graph` に末尾 `ん` 特例遷移を追加する
+  - [x] テストを追加・更新する
 - [x] 漢字を含むワードを扱う機能を実装を、ライブラリ側に移植する（exampleに実装済み）
 - [x] ライブラリインポートのパスが汚い（typinglabs/roman_input/src）ので、方法を考える
   - できればtypinglabs/roman_inputにしたいけど…

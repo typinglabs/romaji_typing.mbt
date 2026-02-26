@@ -23,7 +23,7 @@ moon add typinglabs/romaji_typing
 
 ## 使い方
 
-`create_kana_engine`にひらがなを渡して初期化します。
+`create_kana_engine`にひらがなを渡して初期化します。`options`は任意です。
 
 ```mbt
 let (state, apply) = @typing.create_kana_engine("りんご")
@@ -64,7 +64,7 @@ inspect(results, content=(
 
 漢字混じり文でどこまで打ったかを把握したい場合は、`create_kanji_engine`を使います。
 
-`漢{かん}字{じ}`のような注釈付き文字列を渡します。
+`漢{かん}字{じ}`のような注釈付き文字列を渡します（`options`は任意）。
 
 ```mbt
 let (state, apply) = @typing.create_kanji_engine("漢{かん}字{じ}")

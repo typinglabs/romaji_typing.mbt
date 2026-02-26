@@ -15,6 +15,16 @@ pub enum TypingResult {
 } derive(Show, Eq)
 
 ///|
+pub struct TypingOptions {
+  allow_single_n_at_word_end : Bool
+} derive(Show, Eq)
+
+///|
+pub let default_typing_options : TypingOptions = {
+  allow_single_n_at_word_end: false,
+}
+
+///|
 /// Function that applies a key and returns next state and result.
 pub type ApplyKeyFn = (Char) -> (TypingState, TypingResult) raise Error
 
@@ -42,8 +52,9 @@ priv struct TypingEngine {
 /// ```
 pub fn create_kana_engine(
   kana : String,
+  options? : TypingOptions = default_typing_options,
 ) -> (TypingState, ApplyKeyFn) raise Error {
-  let (graph, dist) = build_graph_from_kana_with_dist(kana)
+  let (graph, dist) = build_graph_from_kana_with_dist(kana, options)
   let start_id = get_node_id({ kana_index: 0, buffer: "" })
   let goal_id = get_node_id({ kana_index: kana[:].length(), buffer: "" })
   let guide = shortest_path(graph, dist, start_id, goal_id)
@@ -64,9 +75,17 @@ pub fn create_kana_engine(
 
     // keyが正しいかどうか判定
     let mut next_edge = None
+    let mut best_dist = 1_000_000_000
     for edge in engine.graph[engine.current] {
       if edge.pressed_key == key {
-        next_edge = Some(edge)
+        let next_dist = match engine.dist.get(edge.to) {
+          Some(value) => value
+          None => continue
+        }
+        if next_dist < best_dist {
+          best_dist = next_dist
+          next_edge = Some(edge)
+        }
       }
     }
     match next_edge {
@@ -203,4 +222,58 @@ test "remaining_romajiを取得できる きゅう -> kilyuu" {
   assert_eq(state.remaining_romaji, "u")
   let (state, _) = apply_key('u')
   assert_eq(state.remaining_romaji, "")
+}
+
+///|
+test "末尾のんをn1回で入力できる（option=true）" {
+  let options = { allow_single_n_at_word_end: true }
+  let (_state, apply_key) = create_kana_engine("かん", options~)
+  let (_state, result) = apply_key('k')
+  assert_eq(result, CorrectKey)
+  let (_state, result) = apply_key('a')
+  assert_eq(result, CorrectKey)
+  let (_state, result) = apply_key('n')
+  assert_eq(result, WordCompleted)
+}
+
+///|
+test "末尾のんをn1回で入力できない（option=false）" {
+  let (_state, apply_key) = create_kana_engine("かん")
+  let (_state, result) = apply_key('k')
+  assert_eq(result, CorrectKey)
+  let (_state, result) = apply_key('a')
+  assert_eq(result, CorrectKey)
+  let (_state, result) = apply_key('n')
+  assert_eq(result, CorrectKey)
+}
+
+///|
+test "option=trueでも中間のんはn1回で確定しない" {
+  let options = { allow_single_n_at_word_end: true }
+  let (_state, apply_key) = create_kana_engine("かんい", options~)
+  let (_state, result) = apply_key('k')
+  assert_eq(result, CorrectKey)
+  let (_state, result) = apply_key('a')
+  assert_eq(result, CorrectKey)
+  let (_state, result) = apply_key('n')
+  assert_eq(result, CorrectKey)
+}
+
+///|
+test "option=trueでも末尾のんをnn/xnで入力できる" {
+  let options = { allow_single_n_at_word_end: true }
+
+  // option=true では単一 n 完了経路が優先されるため、
+  // nn はローマ字変換ルールとして維持されていることを確認する。
+  assert_eq(process_keys("kann"), { output: "かん", buffer: "" })
+
+  let (_state, apply_xn) = create_kana_engine("かん", options~)
+  let (_state, result) = apply_xn('k')
+  assert_eq(result, CorrectKey)
+  let (_state, result) = apply_xn('a')
+  assert_eq(result, CorrectKey)
+  let (_state, result) = apply_xn('x')
+  assert_eq(result, CorrectKey)
+  let (_state, result) = apply_xn('n')
+  assert_eq(result, WordCompleted)
 }

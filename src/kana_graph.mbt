@@ -41,6 +41,7 @@ type Graph = Map[NodeId, Array[Edge]]
 ///|
 fn build_graph_from_kana_with_dist(
   kana : String,
+  options : TypingOptions,
 ) -> (Graph, Map[NodeId, Int]) raise Error {
   let graph : Graph = Map::new()
   let start_node : Node = { kana_index: 0, buffer: "" }
@@ -91,6 +92,27 @@ fn build_graph_from_kana_with_dist(
       // next_nodeをキューに追加
       if !visited.contains(next_node_id) {
         queue.push(next_node)
+      }
+
+      // 末尾「ん」だけは、option有効時に n 1回で確定できる遷移を追加する。
+      if options.allow_single_n_at_word_end &&
+        key == 'n' &&
+        node.buffer == "" &&
+        node.kana_index + 1 == len &&
+        view[node.kana_index] == 'ん' {
+        let single_n_next_node : Node = {
+          buffer: "",
+          kana_index: node.kana_index + 1,
+        }
+        let single_n_next_id = get_node_id(single_n_next_node)
+        let single_n_edge : Edge = { to: node_id, pressed_key: 'n' }
+        match graph.get(single_n_next_id) {
+          None => graph.set(single_n_next_id, [single_n_edge])
+          Some(edges) => edges.push(single_n_edge)
+        }
+        if !visited.contains(single_n_next_id) {
+          queue.push(single_n_next_node)
+        }
       }
     }
   }
@@ -179,7 +201,10 @@ fn edges_to_string(edges : Array[Edge]) -> String {
 
 ///|
 test "build_kana_graph きゅう" {
-  let (graph, dist) = build_graph_from_kana_with_dist("きゅう")
+  let (graph, dist) = build_graph_from_kana_with_dist(
+    "きゅう",
+    default_typing_options,
+  )
   inspect(
     graph,
     content=(
@@ -205,7 +230,7 @@ test "build_kana_graph きゅう" {
 
 ///|
 test "build_kana_graph な" {
-  let (graph, _) = build_graph_from_kana_with_dist("な")
+  let (graph, _) = build_graph_from_kana_with_dist("な", default_typing_options)
   inspect(
     graph,
     content=(
@@ -216,7 +241,7 @@ test "build_kana_graph な" {
 
 ///|
 test "build_kana_graph あー" {
-  let (graph, _) = build_graph_from_kana_with_dist("あー")
+  let (graph, _) = build_graph_from_kana_with_dist("あー", default_typing_options)
   inspect(
     graph,
     content=(
