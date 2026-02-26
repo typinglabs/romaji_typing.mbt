@@ -41,7 +41,7 @@ type Graph = Map[NodeId, Array[Edge]]
 ///|
 fn build_graph_from_kana_with_dist(
   kana : String,
-  options : TypingOptions,
+  options? : TypingOptions = default_typing_options,
 ) -> (Graph, Map[NodeId, Int]) raise Error {
   let graph : Graph = Map::new()
   let start_node : Node = { kana_index: 0, buffer: "" }
@@ -201,10 +201,7 @@ fn edges_to_string(edges : Array[Edge]) -> String {
 
 ///|
 test "build_kana_graph きゅう" {
-  let (graph, dist) = build_graph_from_kana_with_dist(
-    "きゅう",
-    default_typing_options,
-  )
+  let (graph, dist) = build_graph_from_kana_with_dist("きゅう")
   inspect(
     graph,
     content=(
@@ -230,7 +227,7 @@ test "build_kana_graph きゅう" {
 
 ///|
 test "build_kana_graph な" {
-  let (graph, _) = build_graph_from_kana_with_dist("な", default_typing_options)
+  let (graph, _) = build_graph_from_kana_with_dist("な")
   inspect(
     graph,
     content=(
@@ -241,7 +238,7 @@ test "build_kana_graph な" {
 
 ///|
 test "build_kana_graph あー" {
-  let (graph, _) = build_graph_from_kana_with_dist("あー", default_typing_options)
+  let (graph, _) = build_graph_from_kana_with_dist("あー")
   inspect(
     graph,
     content=(

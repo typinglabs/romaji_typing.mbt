@@ -54,7 +54,7 @@ pub fn create_kana_engine(
   kana : String,
   options? : TypingOptions = default_typing_options,
 ) -> (TypingState, ApplyKeyFn) raise Error {
-  let (graph, dist) = build_graph_from_kana_with_dist(kana, options)
+  let (graph, dist) = build_graph_from_kana_with_dist(kana, options~)
   let start_id = get_node_id({ kana_index: 0, buffer: "" })
   let goal_id = get_node_id({ kana_index: kana[:].length(), buffer: "" })
   let guide = shortest_path(graph, dist, start_id, goal_id)

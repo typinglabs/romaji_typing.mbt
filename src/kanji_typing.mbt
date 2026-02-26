@@ -148,9 +148,7 @@ fn kanji_state_from_roman(
 /// # Example
 /// ```mbt check
 /// test {
-///   let (state, _apply) = create_kanji_engine(
-///     "作{さく}成{せい}する",
-///   )
+///   let (state, _apply) = create_kanji_engine("作{さく}成{せい}する")
 ///   assert_eq(state.typed_kanji_len, 0)
 /// }
 /// ```
